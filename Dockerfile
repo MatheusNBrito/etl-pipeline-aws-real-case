@@ -1,22 +1,21 @@
-# Imagem base com Python
+# Imagem base
 FROM python:3.10
 
 LABEL maintainer="Matheus Brito"
 
-# Evita interações durante instalação
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Define variáveis de ambiente para Spark
+# Versões do Spark e Hadoop
 ENV SPARK_VERSION=3.5.0
 ENV HADOOP_VERSION=3
 ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 
-# Instalar dependências do sistema
+# Instalação de dependências
 RUN apt-get update && \
     apt-get install -y curl wget openjdk-17-jdk git netcat-openbsd unzip && \
     apt-get clean
 
-# Instalar Apache Spark
+# Instalação do Apache Spark
 RUN wget https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop3.tgz && \
     tar xvf spark-${SPARK_VERSION}-bin-hadoop3.tgz && \
     mv spark-${SPARK_VERSION}-bin-hadoop3 /opt/spark && \
@@ -25,23 +24,26 @@ RUN wget https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SP
 ENV SPARK_HOME=/opt/spark
 ENV PATH=$PATH:$SPARK_HOME/bin
 
-# Variáveis do Airflow
+# Instalação do Jupyter e registro do kernel
+RUN pip install notebook ipykernel && \
+    python -m ipykernel install --user --name etl-pipeline-aws --display-name "Python (etl-pipeline-aws)"
+
+# Instalação do Airflow + libs extras
 ENV AIRFLOW_VERSION=2.7.3
 ENV CONSTRAINT_URL=https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/constraints-3.10.txt
 
-# Instalar Airflow e libs Python
 RUN pip install "apache-airflow==${AIRFLOW_VERSION}" --constraint "${CONSTRAINT_URL}" && \
     pip install pandas boto3 pyarrow pyspark==${SPARK_VERSION}
 
-# Criar diretórios de trabalho
+# Criação da pasta de trabalho
 WORKDIR /app
 COPY . /app
 
-# Inicializa o Airflow (pré-criação do banco e pastas)
+# Inicialização do banco do Airflow
 RUN airflow db init
 
-# Porta padrão do webserver
-EXPOSE 8080
+# Expõe Airflow (8080) e Jupyter (8888)
+EXPOSE 8080 8888
 
-# Comando de entrada (modo desenvolvimento)
+# Comando padrão: inicia Airflow (o Jupyter será manual)
 CMD ["airflow", "standalone"]
