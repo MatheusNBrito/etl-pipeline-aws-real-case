@@ -34,10 +34,22 @@ ENV CONSTRAINT_URL=https://raw.githubusercontent.com/apache/airflow/constraints-
 
 RUN pip install "apache-airflow==${AIRFLOW_VERSION}" --constraint "${CONSTRAINT_URL}" && \
     pip install pandas boto3 pyarrow pyspark==${SPARK_VERSION}
+    
+# Instalação do Jupyter e suas dependências
+RUN pip install notebook ipykernel jupyterlab jupyter_server
 
 # Criação da pasta de trabalho
 WORKDIR /app
 COPY . /app
+
+ENV PYTHONPATH="/app/src/main"
+
+# Copia o requirements.txt e instala as dependências
+COPY requirements.txt /app/requirements.txt
+RUN pip install --no-cache-dir -r /app/requirements.txt
+
+
+
 
 # Inicialização do banco do Airflow
 RUN airflow db init
@@ -47,3 +59,4 @@ EXPOSE 8080 8888
 
 # Comando padrão: inicia Airflow (o Jupyter será manual)
 CMD ["airflow", "standalone"]
+
