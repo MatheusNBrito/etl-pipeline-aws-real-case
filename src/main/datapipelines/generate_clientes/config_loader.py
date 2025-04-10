@@ -6,3 +6,4 @@ conf_path = Path(__file__).resolve().parent / "resources" / "application.conf"
 
 # Carrega e expõe a configuração como um dicionário-like
 config = ConfigFactory.parse_file(str(conf_path))
+
