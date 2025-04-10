@@ -1,5 +1,4 @@
 from datapipelines.generate_clientes.config_loader import config
-from datapipelines.generate_clientes.commons.spark_session import SparkSessionWrapper
 from datapipelines.generate_clientes.commons.variables import clientes_col_seq, clientes_opt_col_seq, enderecos_clientes_col_seq
 from pyspark.sql import DataFrame
 import logging
@@ -8,38 +7,42 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Inicializa a sessão Spark
-spark_wrapper = SparkSessionWrapper(app_name="GenerateClientesSparkSession")
-spark = spark_wrapper.get_session()
-
-
 class DataLoader:
-    def __init__(self):
-        # Inicializa a sessão Spark
-        self.spark_wrapper = SparkSessionWrapper(app_name="GenerateClientesSparkSession")
-        self.spark = self.spark_wrapper.get_session()
+    def __init__(self, spark):
+        """ Inicializa com a sessão Spark recebida """
+        self.spark = spark
 
-    def load_data(self, raw_tables):
+    def load_data(self, layer: str, tables: dict):
         """
         Função para carregar os dados dos arquivos definidos no arquivo de configuração (application.conf).
-        """
-        # Carregar os dados dos arquivos conforme o tipo (Parquet, JSON)
-        clientes_raw_df = self.spark.read.parquet(raw_tables["CLIENTES_PATH"]).select(*clientes_col_seq)
-        clientes_opt_raw_df = self.spark.read.json(raw_tables["CLIENTES_OPT_PATH"]).select(*clientes_opt_col_seq)
-        enderecos_clientes_raw_df = self.spark.read.parquet(raw_tables["ENDERECOS_CLIENTES_PATH"]).select(*enderecos_clientes_col_seq)
-
         
+        :param layer: Indica a camada de dados a ser carregada ("raw" ou "processed").
+        """
+        if layer == "raw":
+            # Carregar os dados da camada raw (bruto)
+            clientes_df = self.spark.read.parquet(tables["CLIENTES_PATH"]).select(*clientes_col_seq)
+            clientes_opt_df = self.spark.read.json(tables["CLIENTES_OPT_PATH"]).select(*clientes_opt_col_seq)
+            enderecos_clientes_df = self.spark.read.parquet(tables["ENDERECOS_CLIENTES_PATH"]).select(*enderecos_clientes_col_seq)
+        elif layer == "processed":
+            # Carregar os dados da camada processed (transformados)
+            clientes_df = self.spark.read.parquet(tables["CLIENTES_PATH"]).select(*clientes_col_seq)
+            clientes_opt_df = self.spark.read.parquet(tables["CLIENTES_OPT_PATH"]).select(*clientes_opt_col_seq)
+            enderecos_clientes_df = self.spark.read.parquet(tables["ENDERECOS_CLIENTES_PATH"]).select(*enderecos_clientes_col_seq)
+        else:
+            raise ValueError("A camada especificada deve ser 'raw' ou 'processed'.")
+
         # Imprimir o esquema para verificação
-        clientes_raw_df.printSchema()
-        clientes_opt_raw_df.printSchema()
-        enderecos_clientes_raw_df.printSchema()
+        clientes_df.printSchema()
+        clientes_opt_df.printSchema()
+        enderecos_clientes_df.printSchema()
 
         # Retornar os DataFrames carregados
-        return clientes_raw_df, clientes_opt_raw_df, enderecos_clientes_raw_df
+        return clientes_df, clientes_opt_df, enderecos_clientes_df
 
     def stop(self):
         """Para a sessão Spark quando não for mais necessária"""
-        self.spark_wrapper.stop()
+        self.spark.stop()
+
 
 def save_parquet(df: DataFrame, output_path: str, mode: str = "overwrite") -> None:
     """
