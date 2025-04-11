@@ -9,14 +9,12 @@ logger = logging.getLogger(__name__)
 
 class DataLoader:
     def __init__(self, spark):
-        """ Inicializa com a sessão Spark recebida """
         self.spark = spark
 
     def load_data(self, layer: str, tables: dict):
         """
-        Função para carregar os dados dos arquivos definidos no arquivo de configuração (application.conf).
-        
-        :param layer: Indica a camada de dados a ser carregada ("raw" ou "processed").
+        Função para carregar os dados dos arquivos
+        :Layer: Indica a camada de dados a ser carregada ("raw" ou "processed").
         """
         if layer == "raw":
             # Carregar os dados da camada raw (bruto)
@@ -38,10 +36,6 @@ class DataLoader:
 
         # Retornar os DataFrames carregados
         return clientes_df, clientes_opt_df, enderecos_clientes_df
-
-    def stop(self):
-        """Para a sessão Spark quando não for mais necessária"""
-        self.spark.stop()
 
 
 def save_parquet(df: DataFrame, output_path: str, mode: str = "overwrite") -> None:

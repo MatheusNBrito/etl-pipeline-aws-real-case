@@ -14,10 +14,6 @@ spark = spark_wrapper.get_session()
 # Diretório base do projeto (raiz do container /app)
 BASE_DIR = Path("/app")
 
-# Caminhos de saída (para a camada processed)
-output_path_clientes_opt = str(BASE_DIR / config["output_paths"]["processed_tables"]["CLIENTES_OPT_PATH"])
-output_path_enderecos_clientes = str(BASE_DIR / config["output_paths"]["processed_tables"]["ENDERECOS_CLIENTES_PATH"])
-output_path_clientes = str(BASE_DIR / config["output_paths"]["processed_tables"]["CLIENTES_PATH"])
 
 # Recupera os caminhos do arquivo de configuração para a camada raw
 raw_tables = config["input_paths"]["raw_tables"]
@@ -26,6 +22,12 @@ raw_tables = config["input_paths"]["raw_tables"]
 raw_tables["CLIENTES_PATH"] = str(BASE_DIR / raw_tables["CLIENTES_PATH"])
 raw_tables["CLIENTES_OPT_PATH"] = str(BASE_DIR / raw_tables["CLIENTES_OPT_PATH"])
 raw_tables["ENDERECOS_CLIENTES_PATH"] = str(BASE_DIR / raw_tables["ENDERECOS_CLIENTES_PATH"])
+
+# Caminhos de saída (para a camada processed)
+output_path_clientes_opt = str(BASE_DIR / config["output_paths"]["processed_tables"]["CLIENTES_OPT_PATH"])
+output_path_enderecos_clientes = str(BASE_DIR / config["output_paths"]["processed_tables"]["ENDERECOS_CLIENTES_PATH"])
+output_path_clientes = str(BASE_DIR / config["output_paths"]["processed_tables"]["CLIENTES_PATH"])
+
 
 # Inicializa o DataLoader
 data_loader = DataLoader(spark)  
