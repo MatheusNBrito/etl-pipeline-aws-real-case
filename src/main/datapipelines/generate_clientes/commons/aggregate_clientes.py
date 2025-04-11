@@ -1,7 +1,14 @@
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import col, count, avg, sum, when
+from pyspark.sql.functions import sum
+from pathlib import Path
 from datapipelines.generate_clientes.commons.constants import *
-from datapipelines.generate_clientes.commons.functions import save_parquet  # Função de salvar
+from datapipelines.generate_clientes.commons.functions import DataLoader, save_parquet
+from datapipelines.generate_clientes.config_loader import config
+from datapipelines.generate_clientes.commons.spark_session import SparkSessionWrapper
+
+# Inicializa a sessão Spark
+spark_wrapper = SparkSessionWrapper(app_name="GenerateClientesSparkSession")
+spark = spark_wrapper.get_session()
 
 
 def aggregate_and_join(df_clientes: DataFrame, df_clientes_opt: DataFrame, df_enderecos: DataFrame) -> DataFrame:
@@ -45,10 +52,10 @@ processed_tables["CLIENTES_OPT_PATH"] = str(BASE_DIR / processed_tables["CLIENTE
 processed_tables["ENDERECOS_CLIENTES_PATH"] = str(BASE_DIR / processed_tables["ENDERECOS_CLIENTES_PATH"])
 
 # Inicializa o DataLoader
-data_loader = DataLoader()
+data_loader = DataLoader(spark)
 
 # Carrega os DataFrames da camada prata (processed)
-df_clientes, df_clientes_opt, df_enderecos_clientes = data_loader.load_data("processed")
+df_clientes, df_clientes_opt, df_enderecos_clientes = data_loader.load_data(processed_tables)
 
 # Realiza a agregação e transformação
 df_gold_clientes = aggregate_and_join(df_clientes, df_clientes_opt, df_enderecos_clientes)

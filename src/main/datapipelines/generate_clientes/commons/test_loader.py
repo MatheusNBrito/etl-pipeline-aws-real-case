@@ -33,7 +33,7 @@ output_path_clientes = str(BASE_DIR / config["output_paths"]["processed_tables"]
 data_loader = DataLoader(spark)  
 
 # Carrega os DataFrames da camada raw (dados brutos)
-df_clientes_raw, df_clientes_opt_raw, df_enderecos_clientes_raw = data_loader.load_data("raw",  raw_tables)
+df_clientes_raw, df_clientes_opt_raw, df_enderecos_clientes_raw = data_loader.load_raw_data(raw_tables)
 
 # Realiza as transformações
 df_transformed_clientes_opt = transform_clientes_opt(df_clientes_opt_raw)
