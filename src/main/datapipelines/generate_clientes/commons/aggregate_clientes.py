@@ -55,10 +55,10 @@ processed_tables["ENDERECOS_CLIENTES_PATH"] = str(BASE_DIR / processed_tables["E
 data_loader = DataLoader(spark)
 
 # Carrega os DataFrames da camada prata (processed)
-df_clientes, df_clientes_opt, df_enderecos_clientes = data_loader.load_data(processed_tables)
+df_processed_clientes, df_processed_clientes_opt, df_processed_enderecos_clientes = data_loader.load_processed_data(processed_tables)
 
 # Realiza a agregação e transformação
-df_gold_clientes = aggregate_and_join(df_clientes, df_clientes_opt, df_enderecos_clientes)
+df_gold_clientes = aggregate_and_join(df_processed_clientes, df_processed_clientes_opt, df_processed_enderecos_clientes)
 
 # Caminho de saída para a camada gold
 output_path_clientes_gold = str(BASE_DIR / config["output_paths"]["gold_tables"]["CLIENTES_PATH"])

@@ -9,3 +9,4 @@ logs/
 *.ipynb_checkpoints
 /data/
 /logs/
+/books/
