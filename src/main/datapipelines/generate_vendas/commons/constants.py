@@ -1,29 +1,34 @@
 # Final Columns
+
+CODIGO_FILIAL = "codigo_filial"
+CODIGO_CUPOM_VENDA = "codigo_cupom_venda"
+DATA_EMISSAO = "data_emissao"
+CODIGO_ITEM = "codigo_item"
+VALOR_UNITARIO = "valor_unitario"
+QUANTIDADE = "quantidade"
 CODIGO_CLIENTE = "codigo_cliente"
-DATA_NASCIMENTO = "data_nascimento"
-IDADE = "idade"
-SEXO = "sexo"
-UF = "uf"
-CIDADE = "cidade"
-ESTADO_CIVIL = "estado_civil"
-FLAG_LGPD_CALL = "flag_lgpd_call"
-FLAG_LGPD_SMS = "flag_lgpd_sms"
-FLAG_LGPD_EMAIL = "flag_lgpd_email"
-FLAG_LGPD_PUSH = "flag_lgpd_push"
+TIPO_DESCONTO = "tipo_desconto"
+CANAL_VENDA = "canal_venda"
 
-# Columns from clientes raw table
-V_ID_CLI = "v_id_cli"
-D_DT_NASC = "d_dt_nasc"
-V_SX_CLI = "v_sx_cli"
-N_EST_CVL = "n_est_cvl"
+# Columns from vendas raw table
 
-# Columns from clientes_opt raw table
-B_PUSH = "b_push"
-B_SMS = "b_sms"
-B_EMAIL = "b_email"
-B_CALL = "b_call"
+D_DT_VD = "d_dt_vd"
+N_ID_FIL = "n_id_fil"
+N_ID_VD_FIL = "n_id_vd_fil"
+V_CLI_COD = "v_cli_cod"
 
-# Columns from enderecos_clientes raw table
-V_LCL = "v_lcl"
-V_UF = "v_uf"
+
+# Column names from pedidos raw tables
+ 
+
+V_CNL_ORIG_PDD = "v_cnl_orig_pdd"
+
+
+
+# Column names from itens_vendas Raw table
+ 
+N_ID_IT = "n_id_it"
+V_IT_VD_CONV = "v_it_vd_conv"
+N_VLR_VD = "n_vlr_vd"
+N_QTD = "n_qtd"
 
