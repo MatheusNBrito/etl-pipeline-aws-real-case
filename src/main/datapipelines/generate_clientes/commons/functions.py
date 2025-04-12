@@ -2,6 +2,7 @@ from datapipelines.generate_clientes.config_loader import config
 from datapipelines.generate_clientes.commons.variables import *
 from pyspark.sql import DataFrame
 import logging
+from pyspark.sql.functions import col, lit, when, isnull, lit, length, explode, count, upper, lower, regexp_replace, regexp_extract
 from typing import Tuple
 
 
@@ -46,3 +47,14 @@ def save_parquet(df: DataFrame, output_path: str, mode: str = "overwrite") -> No
     except Exception as e:
         logger.error(f"❌ Erro ao salvar arquivo em: {output_path} - Erro: {str(e)}")
         raise e
+
+# Transforma os dados nulos para N/I
+def replace_nulls(df: DataFrame) -> DataFrame:
+    for column in df.columns:
+        # Verifica se a coluna é booleana
+        if dict(df.dtypes)[column] == 'boolean':
+            df = df.withColumn(column, when(col(column).isNull(), False).otherwise(col(column)))
+        else:
+            # Para as outras colunas, substitui os nulos por "N/I"
+            df = df.withColumn(column, when(col(column).isNull(), "N/I").otherwise(col(column)))
+    return df

@@ -1,8 +1,9 @@
+from os import replace
 from pyspark.sql import DataFrame
 from pyspark.sql.functions import sum
 from pathlib import Path
 from datapipelines.generate_clientes.commons.constants import *
-from datapipelines.generate_clientes.commons.functions import DataLoader, save_parquet
+from datapipelines.generate_clientes.commons.functions import DataLoader, save_parquet, replace_nulls
 from datapipelines.generate_clientes.config_loader import config
 from datapipelines.generate_clientes.commons.spark_session import SparkSessionWrapper
 
@@ -60,11 +61,15 @@ df_processed_clientes, df_processed_clientes_opt, df_processed_enderecos_cliente
 # Realiza a agregação e transformação
 df_gold_clientes = aggregate_and_join(df_processed_clientes, df_processed_clientes_opt, df_processed_enderecos_clientes)
 
+# Aplica a substituição de nulos antes de salvar
+df_gold_clientes_transformed = replace_nulls(df_gold_clientes)
+
 # Caminho de saída para a camada gold
 output_path_clientes_gold = str(BASE_DIR / config["output_paths"]["gold_tables"]["CLIENTES_PATH"])
 
+
 # Salva o arquivo parquet na camada gold
-save_parquet(df_gold_clientes, output_path_clientes_gold)
+save_parquet(df_gold_clientes_transformed, output_path_clientes_gold)
 
 # Finaliza a sessão Spark
 data_loader.stop()
