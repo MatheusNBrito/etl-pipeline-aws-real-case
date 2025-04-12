@@ -17,13 +17,9 @@ N_ID_FIL = "n_id_fil"
 N_ID_VD_FIL = "n_id_vd_fil"
 V_CLI_COD = "v_cli_cod"
 
-
 # Column names from pedidos raw tables
  
-
 V_CNL_ORIG_PDD = "v_cnl_orig_pdd"
-
-
 
 # Column names from itens_vendas Raw table
  

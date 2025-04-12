@@ -1,43 +1,40 @@
-from datapipelines.generate_clientes.commons.constants import *  
+from datapipelines.generate_vendas.commons.constants import *  
 
-# Sequência de colunas para os dados de CLIENTES
-clientes_col_seq_raw = [
-    V_ID_CLI, D_DT_NASC, V_SX_CLI, N_EST_CVL
+# Sequência de colunas para os dados de Vendas
+vendas_col_seq_raw = [
+    D_DT_VD, N_ID_FIL, N_ID_VD_FIL, V_CLI_COD
 ]
 
-# Sequência de colunas para os dados de CLIENTES OPT
-clientes_opt_col_seq__raw = [
-    V_ID_CLI, B_PUSH, B_SMS, B_EMAIL, B_CALL
+# Sequência de colunas para os dados de pedidos
+pedidos_col_seq_raw = [
+    V_CNL_ORIG_PDD
 ]
 
-# Sequência de colunas para os dados de ENDEREÇOS
-enderecos_clientes_col_seq_raw = [
-    V_ID_CLI, V_LCL, V_UF
+# Sequência de colunas para os dados itens_venas
+itens_vendas_col_seq_raw = [
+    N_ID_IT, V_IT_VD_CONV, N_VLR_VD, N_QTD
 ]
 
 
-####-CONTINUAR DAQUI, MAPEANDO AS NOVAS VARIAVEIS DA CAMADA PROCESSADO, 
-# TENDO EM VISTA QUE O NOMES DAS COLUNAS MUDARAM
-# Colunas da camada PROCESSED (padronizadas e com valores tratados)
-clientes_processed_col_seq = [
-    CODIGO_CLIENTE,
-    DATA_NASCIMENTO,
-    SEXO,
-    ESTADO_CIVIL,
-    IDADE
-]
+# clientes_processed_col_seq = [
+#     CODIGO_CLIENTE,
+#     DATA_NASCIMENTO,
+#     SEXO,
+#     ESTADO_CIVIL,
+#     IDADE
+# ]
 
-clientes_opt_processed_col_seq = [
-    CODIGO_CLIENTE,
-    FLAG_LGPD_CALL,
-    FLAG_LGPD_SMS,
-    FLAG_LGPD_EMAIL,
-    FLAG_LGPD_PUSH
-]
+# clientes_opt_processed_col_seq = [
+#     CODIGO_CLIENTE,
+#     FLAG_LGPD_CALL,
+#     FLAG_LGPD_SMS,
+#     FLAG_LGPD_EMAIL,
+#     FLAG_LGPD_PUSH
+# ]
 
-enderecos_processed_col_seq = [
-    CODIGO_CLIENTE,
-    UF,
-    CIDADE
-]
+# enderecos_processed_col_seq = [
+#     CODIGO_CLIENTE,
+#     UF,
+#     CIDADE
+# ]
 
