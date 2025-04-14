@@ -1,5 +1,5 @@
-from datapipelines.generate_clientes.config_loader import config
-from datapipelines.generate_clientes.commons.variables import *
+from datapipelines.generate_vendas.config_loader import config
+from datapipelines.generate_vendas.commons.variables import *
 from pyspark.sql import DataFrame
 import logging
 from pyspark.sql.functions import col, lit, when, isnull, lit, length, explode, count, upper, lower, regexp_replace, regexp_extract
@@ -23,21 +23,22 @@ class DataLoader:
         """
         Carrega os dados da camada raw, utilizando os nomes de colunas originais.
         """
-        clientes_df = self.spark.read.parquet(tables["CLIENTES_PATH"]).select(*clientes_col_seq_raw)
-        clientes_opt_df = self.spark.read.json(tables["CLIENTES_OPT_PATH"]).select(*clientes_opt_col_seq__raw)
-        enderecos_df = self.spark.read.parquet(tables["ENDERECOS_CLIENTES_PATH"]).select(*enderecos_clientes_col_seq_raw)
+        vendas_df = self.spark.read.parquet(tables["VENDAS_PATH"]).select(*vendas_col_seq_raw)
+        pedidos_df = self.spark.read.parquet(tables["PEDIDOS_PATH"]).select(*pedidos_col_seq_raw)
+        itens_vendas_df = self.spark.read.parquet(tables["ITENS_VENDA_PATH"]).select(*itens_vendas_col_seq_raw)
 
-        return clientes_df, clientes_opt_df, enderecos_df
+
+        return vendas_df, pedidos_df, itens_vendas_df
 
     def load_processed_data(self, tables: dict) -> Tuple[DataFrame, DataFrame, DataFrame]:
         """
         Carrega os dados da camada processed, utilizando os nomes padronizados.
         """
-        clientes_df = self.spark.read.parquet(tables["CLIENTES_PATH"]).select(*clientes_processed_col_seq)
-        clientes_opt_df = self.spark.read.parquet(tables["CLIENTES_OPT_PATH"]).select(*clientes_opt_processed_col_seq)
-        enderecos_df = self.spark.read.parquet(tables["ENDERECOS_CLIENTES_PATH"]).select(*enderecos_processed_col_seq)
+        vendas_df = self.spark.read.parquet(tables["VENDAS_PATH"]).select(*vendas_processed_col_seq)
+        pedidos_df = self.spark.read.parquet(tables["PEDIDOS_PATH"]).select(*pedidos_processed_col_seq)
+        itens_vendas_df = self.spark.read.parquet(tables["ITENS_VENDA_PATH"]).select(*itens_vendas_processed_col_seq)
 
-        return clientes_df, clientes_opt_df, enderecos_df
+        return vendas_df, pedidos_df, itens_vendas_df
 
 # Salvar os arquivos
 def save_parquet(df: DataFrame, output_path: str, mode: str = "overwrite") -> None:

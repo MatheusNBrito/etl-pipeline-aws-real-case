@@ -16,25 +16,21 @@ itens_vendas_col_seq_raw = [
 ]
 
 
-# clientes_processed_col_seq = [
-#     CODIGO_CLIENTE,
-#     DATA_NASCIMENTO,
-#     SEXO,
-#     ESTADO_CIVIL,
-#     IDADE
-# ]
+vendas_processed_col_seq = [
+    DATA_EMISSAO,
+    CODIGO_FILIAL,
+    CODIGO_CUPOM_VENDA,
+    CODIGO_CLIENTE
+]
 
-# clientes_opt_processed_col_seq = [
-#     CODIGO_CLIENTE,
-#     FLAG_LGPD_CALL,
-#     FLAG_LGPD_SMS,
-#     FLAG_LGPD_EMAIL,
-#     FLAG_LGPD_PUSH
-# ]
+pedidos_processed_col_seq = [
+    CANAL_VENDA
+   ]
 
-# enderecos_processed_col_seq = [
-#     CODIGO_CLIENTE,
-#     UF,
-#     CIDADE
-# ]
+itens_vendas_processed_col_seq = [
+    CODIGO_ITEM,
+    TIPO_DESCONTO,
+    VALOR_UNITARIO,
+    QUANTIDADE
+]
 

@@ -12,7 +12,6 @@ from datapipelines.generate_clientes.commons.constants import (
     FLAG_LGPD_EMAIL,
     FLAG_LGPD_CALL,
 )
-from datapipelines.generate_clientes.commons.functions import save_parquet
 
 def transform_clientes_opt(df: DataFrame) -> DataFrame:
     """
