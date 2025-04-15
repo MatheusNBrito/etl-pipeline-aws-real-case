@@ -11,6 +11,9 @@ class SparkSessionWrapper:
             .config("spark.sql.parquet.enableVectorizedReader", "false") \
             .config("spark.hadoop.io.nativeio", "false") \
             .master(master) \
+            .config("spark.driver.memory", "10g") \
+            .config("spark.executor.memory", "10g") \
+            .config("spark.sql.shuffle.partitions", "50") \
             .getOrCreate()
         
         logger.info(f"✅ Spark session started with app: {app_name}")
