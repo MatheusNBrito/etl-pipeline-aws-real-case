@@ -9,6 +9,7 @@ QUANTIDADE = "quantidade"
 CODIGO_CLIENTE = "codigo_cliente"
 TIPO_DESCONTO = "tipo_desconto"
 CANAL_VENDA = "canal_venda"
+CODIGO_PEDIDO = "codigo_pedido"
 
 # Columns from vendas raw table
 
@@ -20,6 +21,7 @@ V_CLI_COD = "v_cli_cod"
 # Column names from pedidos raw tables
  
 V_CNL_ORIG_PDD = "v_cnl_orig_pdd"
+N_ID_PDD = "n_id_pdd"
 
 # Column names from itens_vendas Raw table
  

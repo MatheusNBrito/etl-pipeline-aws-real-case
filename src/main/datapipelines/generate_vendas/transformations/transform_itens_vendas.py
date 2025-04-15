@@ -13,6 +13,7 @@ def transform_itens_vendas(df: DataFrame) -> DataFrame:
             col(V_IT_VD_CONV).alias(TIPO_DESCONTO),
             col(N_VLR_VD).alias(VALOR_UNITARIO),
             col(N_QTD).alias(QUANTIDADE),
+            col(N_ID_VD_FIL).alias(CODIGO_CUPOM_VENDA)
         )
     )
     

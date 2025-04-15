@@ -19,16 +19,16 @@ class DataLoader:
         :Layer: Indica a camada de dados a ser carregada ("raw" ou "processed").
         """
 
-    def load_raw_data(self, tables: dict) -> Tuple[DataFrame, DataFrame, DataFrame]:
+    def load_raw_data(self, tables: dict) -> Tuple[DataFrame, DataFrame, DataFrame, DataFrame]:
         """
         Carrega os dados da camada raw, utilizando os nomes de colunas originais.
         """
         vendas_df = self.spark.read.parquet(tables["VENDAS_PATH"]).select(*vendas_col_seq_raw)
         pedidos_df = self.spark.read.parquet(tables["PEDIDOS_PATH"]).select(*pedidos_col_seq_raw)
         itens_vendas_df = self.spark.read.parquet(tables["ITENS_VENDA_PATH"]).select(*itens_vendas_col_seq_raw)
+        pedido_venda_df = self.spark.read.parquet(tables["PEDIDO_VENDA_PATH"])
 
-
-        return vendas_df, pedidos_df, itens_vendas_df
+        return vendas_df, pedidos_df, itens_vendas_df, pedido_venda_df
 
     def load_processed_data(self, tables: dict) -> Tuple[DataFrame, DataFrame, DataFrame]:
         """
@@ -37,8 +37,9 @@ class DataLoader:
         vendas_df = self.spark.read.parquet(tables["VENDAS_PATH"]).select(*vendas_processed_col_seq)
         pedidos_df = self.spark.read.parquet(tables["PEDIDOS_PATH"]).select(*pedidos_processed_col_seq)
         itens_vendas_df = self.spark.read.parquet(tables["ITENS_VENDA_PATH"]).select(*itens_vendas_processed_col_seq)
+        pedido_venda_df = self.spark.read.parquet(tables["PEDIDO_VENDA_PATH"])
 
-        return vendas_df, pedidos_df, itens_vendas_df
+        return vendas_df, pedidos_df, itens_vendas_df, pedido_venda_df
 
 # Salvar os arquivos
 def save_parquet(df: DataFrame, output_path: str, mode: str = "overwrite") -> None:
