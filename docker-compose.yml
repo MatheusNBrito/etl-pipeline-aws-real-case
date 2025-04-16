@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:13
+    container_name: airflow-postgres
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    volumes:
+      - postgres-db-volume:/var/lib/postgresql/data
+
+  etl-container:
+    build: .
+    container_name: etl-container
+    depends_on:
+      - postgres
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'False'
+    ports:
+      - "8081:8080"
+      - "8888:8888"
+    volumes:
+      - ./src/main/datapipelines/generate_clientes/dags:/opt/airflow/dags/clientes
+      - ./src/main/datapipelines/generate_vendas/dags:/opt/airflow/dags/vendas
+      - ./src/main/datapipelines/generate_clientes/dags/scripts:/opt/airflow/scripts/clientes
+      - ./src/main/datapipelines/generate_vendas/dags/scripts:/opt/airflow/scripts/vendas
+      - ./logs:/opt/airflow/logs
+      - ./airflow_home:/opt/airflow
+    command: bash -c "airflow db init && airflow webserver"
+
+volumes:
+  postgres-db-volume:

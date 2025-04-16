@@ -33,7 +33,7 @@ ENV AIRFLOW_VERSION=2.7.3
 ENV CONSTRAINT_URL=https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/constraints-3.10.txt
 
 RUN pip install "apache-airflow==${AIRFLOW_VERSION}" --constraint "${CONSTRAINT_URL}" && \
-    pip install pandas boto3 pyarrow pyspark==${SPARK_VERSION}
+    pip install psycopg2-binary pandas boto3 pyarrow pyspark==${SPARK_VERSION}
     
 # Instalação do Jupyter e suas dependências
 RUN pip install notebook ipykernel jupyterlab jupyter_server
