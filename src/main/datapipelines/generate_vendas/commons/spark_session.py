@@ -14,6 +14,7 @@ class SparkSessionWrapper:
             .config("spark.driver.memory", "10g") \
             .config("spark.executor.memory", "10g") \
             .config("spark.sql.shuffle.partitions", "50") \
+            .config("spark.sql.adaptive.enabled", "false") \
             .getOrCreate()
         
         logger.info(f"✅ Spark session started with app: {app_name}")

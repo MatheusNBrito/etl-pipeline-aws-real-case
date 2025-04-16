@@ -2,13 +2,12 @@ from pyspark.sql import DataFrame
 from pyspark.sql.functions import sum
 from pathlib import Path
 import logging
-
+from pyspark import StorageLevel
 from datapipelines.generate_vendas.commons.constants import *
 from datapipelines.generate_vendas.commons.functions import DataLoader, save_parquet, replace_nulls
 from datapipelines.generate_vendas.config_loader import config
 from datapipelines.generate_vendas.commons.spark_session import SparkSessionWrapper
 import gc
-
 
 # Configura log
 logging.basicConfig(level=logging.INFO)
@@ -44,7 +43,8 @@ def aggregate_and_join(df_vendas: DataFrame, df_pedidos: DataFrame, df_itens_ven
     logger.info("🔁 Colunas em comum entre os DataFrames: %s", common_columns)
 
     df_vendas_com_canal = df_vendas_com_canal.repartition(50, CODIGO_CUPOM_VENDA).cache()
-    df_itens_vendas = df_itens_vendas.repartition(50, CODIGO_CUPOM_VENDA).cache()
+    df_itens_vendas = df_itens_vendas.repartition(50, CODIGO_CUPOM_VENDA).persist(StorageLevel.DISK_ONLY)
+
 
     logger.info("Join de vendas com itens_vendas em andamento...")
 
@@ -54,7 +54,7 @@ def aggregate_and_join(df_vendas: DataFrame, df_pedidos: DataFrame, df_itens_ven
         how="left"
     )
 
-    logger.info("Join finalizado. Quantidade de linhas totais: %s")
+    # logger.info("Join finalizado. Quantidade de linhas totais: %s")
 
     # Selecionar as colunas necessárias para a camada gold
     df_vendas_gold = df_joined.select(
@@ -135,7 +135,8 @@ gc.collect()
 # Salva o arquivo parquet na camada gold
 save_parquet(df_gold_vendas, output_path_vendas_gold)
 
-logger.info("Arquivo gold de vendas salvo com sucesso!")
+logger.info("Arquivo gold de vendas salvo com sucesso em: %s", output_path_vendas_gold)
+
 
 # Finaliza a sessão Spark
 data_loader.stop()
