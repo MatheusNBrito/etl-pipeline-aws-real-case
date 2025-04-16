@@ -1,8 +1,7 @@
-from datapipelines.generate_clientes.config_loader import config
 from datapipelines.generate_clientes.commons.variables import *
 from pyspark.sql import DataFrame
 import logging
-from pyspark.sql.functions import col, lit, when, isnull, lit, length, explode, count, upper, lower, regexp_replace, regexp_extract
+from pyspark.sql.functions import col, when
 from typing import Tuple
 
 

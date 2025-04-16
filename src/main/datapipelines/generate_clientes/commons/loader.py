@@ -40,16 +40,6 @@ df_transformed_clientes_opt = transform_clientes_opt(df_clientes_opt_raw)
 df_transformed_enderecos_clientes = transform_enderecos_clientes(df_enderecos_clientes_raw)
 df_transformed_clientes = transform_clientes(df_clientes_raw)
 
-# Exibe os dados lidos (top 5 registros de cada dataframe)
-print("======= CLIENTES =======")
-df_clientes_raw.show(5)
-
-print("======= CLIENTES OPT =======")
-df_clientes_opt_raw.show(5)
-
-print("======= ENDERECOS CLIENTES =======")
-df_enderecos_clientes_raw.show(5)
-
 # Salva o arquivo parquet tratado na camada processed
 save_parquet(df_transformed_clientes_opt, output_path_clientes_opt)
 save_parquet(df_transformed_enderecos_clientes, output_path_enderecos_clientes)
