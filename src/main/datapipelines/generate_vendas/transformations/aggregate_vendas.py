@@ -13,6 +13,10 @@ import gc
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Diretório base do projeto (raiz do container /app)
+BASE_DIR = Path("/app")
+
+
 # Inicializa a sessão Spark
 spark_wrapper = SparkSessionWrapper(app_name="GenerateVendasSparkSession")
 spark = spark_wrapper.get_session()
@@ -34,13 +38,7 @@ def aggregate_and_join(df_vendas: DataFrame, df_pedidos: DataFrame, df_itens_ven
     logger.info("Join de vendas com canal_venda finalizado. Quantidade de linhas: %s")
 
     # Otimização para grande volume de dados
-    logger.info("⏳ Schema de df_vendas_com_canal:")
-    df_vendas_com_canal.printSchema()
-    logger.info("⏳ Schema de df_itens_vendas:")
-    df_itens_vendas.printSchema()
-    common_columns = set(df_vendas_com_canal.columns) & set(df_itens_vendas.columns)
-    logger.info("🔁 Colunas em comum entre os DataFrames: %s", common_columns)
-
+   
     df_vendas_com_canal = df_vendas_com_canal.repartition(50, CODIGO_CUPOM_VENDA).cache()
     df_itens_vendas = df_itens_vendas.repartition(50, CODIGO_CUPOM_VENDA).persist(StorageLevel.DISK_ONLY)
 
@@ -52,8 +50,6 @@ def aggregate_and_join(df_vendas: DataFrame, df_pedidos: DataFrame, df_itens_ven
         on=CODIGO_CUPOM_VENDA,
         how="left"
     )
-
-    # logger.info("Join finalizado. Quantidade de linhas totais: %s")
 
     # Selecionar as colunas necessárias para a camada gold
     df_vendas_gold = df_joined.select(
@@ -94,8 +90,6 @@ def join_vendas_com_canal(df_vendas: DataFrame, df_pedido_venda: DataFrame, df_p
     return df_vendas_com_canal
 
 
-# Diretório base do projeto (raiz do container /app)
-BASE_DIR = Path("/app")
 
 # Recupera os caminhos do arquivo de configuração
 processed_tables = config["input_paths"]["processed_tables"]

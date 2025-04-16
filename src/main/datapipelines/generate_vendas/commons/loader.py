@@ -43,18 +43,6 @@ df_transformed_pedidos = transform_pedidos(df_pedidos_raw)
 df_transformed_itens_vendas = transform_itens_vendas(df_itens_vendas_raw)
 df_transformed_pedido_venda = transform_pedido_venda(df_pedido_venda_raw)
 
-# Exibe os dados lidos (top 5 registros de cada dataframe)
-print("======= VENDAS =======")
-df_vendas_raw.show(5)
-
-print("======= PEDIDOS =======")
-df_pedidos_raw.show(5)
-
-print("======= ITENS VENDAS =======")
-df_itens_vendas_raw.show(5)
-
-print("======= PEDIDO VENDA =======")
-df_pedido_venda_raw.show(5)
 
 # Salva o arquivo parquet tratado na camada processed
 save_parquet(df_transformed_vendas, output_path_vendas)

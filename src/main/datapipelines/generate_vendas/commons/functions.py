@@ -1,12 +1,7 @@
-from datapipelines.generate_vendas.config_loader import config
 from datapipelines.generate_vendas.commons.variables import *
 from pyspark.sql import DataFrame
 import logging
-from pyspark.sql.functions import col, lit, when, isnull, lit, length, explode, count, upper, lower, regexp_replace, regexp_extract
-from typing import Tuple
-from pyspark.sql import DataFrame, SparkSession
-from pyspark.sql.functions import year, month
-from pathlib import Path
+from pyspark.sql.functions import col, when
 from typing import Tuple
 
 
@@ -17,11 +12,6 @@ logger = logging.getLogger(__name__)
 class DataLoader:
     def __init__(self, spark):
         self.spark = spark
-
-        """
-        Função para carregar os dados dos arquivos
-        :Layer: Indica a camada de dados a ser carregada ("raw" ou "processed").
-        """
 
     def load_raw_data(self, tables: dict) -> Tuple[DataFrame, DataFrame, DataFrame, DataFrame]:
         """
