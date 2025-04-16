@@ -4,6 +4,10 @@ from pyspark.sql import DataFrame
 import logging
 from pyspark.sql.functions import col, lit, when, isnull, lit, length, explode, count, upper, lower, regexp_replace, regexp_extract
 from typing import Tuple
+from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql.functions import year, month
+from pathlib import Path
+from typing import Tuple
 
 
 # Configura o logger
@@ -60,3 +64,10 @@ def replace_nulls(df: DataFrame) -> DataFrame:
             # Para as outras colunas, substitui os nulos por "N/I"
             df = df.withColumn(column, when(col(column).isNull(), "N/I").otherwise(col(column)))
     return df
+
+
+def replace_null_canal_venda(df: DataFrame) -> DataFrame:
+    """
+    Substitui valores nulos da coluna 'canal_venda' por 'N/I' de forma eficiente.
+    """
+    return df.withColumn(CANAL_VENDA, when(col(CANAL_VENDA).isNull(), "N/I").otherwise(col(CANAL_VENDA)))

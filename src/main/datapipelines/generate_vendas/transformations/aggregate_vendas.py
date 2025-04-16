@@ -4,7 +4,7 @@ from pathlib import Path
 import logging
 from pyspark import StorageLevel
 from datapipelines.generate_vendas.commons.constants import *
-from datapipelines.generate_vendas.commons.functions import DataLoader, save_parquet, replace_nulls
+from datapipelines.generate_vendas.commons.functions import DataLoader, save_parquet, replace_nulls, replace_null_canal_venda
 from datapipelines.generate_vendas.config_loader import config
 from datapipelines.generate_vendas.commons.spark_session import SparkSessionWrapper
 import gc
@@ -23,7 +23,6 @@ def aggregate_and_join(df_vendas: DataFrame, df_pedidos: DataFrame, df_itens_ven
     Junta os dados dos DataFrames de vendas, pedidos e itens_vendas.
     Realiza as agregações necessárias e prepara para a camada gold.
     """
-
     logger.info("Iniciando join de vendas com pedido_venda e pedidos...")
 
     df_vendas_com_canal = join_vendas_com_canal(
@@ -125,6 +124,9 @@ except Exception as e:
 
 # Caminho de saída para a camada gold
 output_path_vendas_gold = str(BASE_DIR / config["output_paths"]["gold_tables"]["VENDAS_PATH"])
+
+df_gold_vendas = replace_null_canal_venda(df_gold_vendas)
+
 
 # Reparticiona e limpa memória antes do save devido ao tamanho do dataset
 df_gold_vendas = df_gold_vendas.coalesce(1)
