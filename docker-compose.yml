@@ -30,6 +30,7 @@ services:
       - ./src/main/datapipelines/generate_vendas/dags/scripts:/opt/airflow/scripts/vendas
       - ./logs:/opt/airflow/logs
       - ./airflow_home:/opt/airflow
+      - ./src:/app/src
     command: bash -c "airflow db init && airflow webserver"
 
 volumes:
