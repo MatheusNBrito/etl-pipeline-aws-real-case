@@ -20,17 +20,23 @@ services:
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
       AIRFLOW__CORE__LOAD_EXAMPLES: 'False'
+      AIRFLOW__CORE__DAGS_FOLDER: /opt/airflow/dags
     ports:
       - "8081:8080"
       - "8888:8888"
     volumes:
-      - ./src/main/datapipelines/generate_clientes/dags:/opt/airflow/dags/clientes
-      - ./src/main/datapipelines/generate_vendas/dags:/opt/airflow/dags/vendas
-      - ./src/main/datapipelines/generate_clientes/dags/scripts:/opt/airflow/scripts/clientes
-      - ./src/main/datapipelines/generate_vendas/dags/scripts:/opt/airflow/scripts/vendas
-      - ./logs:/opt/airflow/logs
-      - ./airflow_home:/opt/airflow
+      # DAGs das pipelines
+      - ./airflow_home/dags:/opt/airflow/dags
+
+            # Scripts utilitários chamados pelas DAGs
       - ./src:/app/src
+      
+      # Logs do Airflow
+      - ./logs:/opt/airflow/logs
+      
+      # Configurações do Airflow
+      - ./airflow_home:/opt/airflow
+
     command: bash -c "airflow db init && airflow webserver"
 
 volumes:
