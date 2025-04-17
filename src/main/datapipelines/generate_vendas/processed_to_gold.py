@@ -4,22 +4,33 @@ from datapipelines.generate_vendas.commons.etl_steps_gold import (
     aggregate_and_join,
     save_gold_data
 )
-import logging
+from datapipelines.logger_config import get_logger
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+logger = get_logger("generate_vendas")
 
-# Inicia Spark
-spark_wrapper = SparkSessionWrapper(app_name="GenerateVendasSparkSession")
-spark = spark_wrapper.get_session()
+def main():
+    logger.info("▶ Iniciando sessão Spark para geração da camada gold.")
+    spark_wrapper = SparkSessionWrapper(app_name="GenerateVendasSparkSession")
+    spark = spark_wrapper.get_session()
 
-# Executa pipeline
-try:
-    df_vendas, df_pedidos, df_itens, df_pedido_venda = load_processed_data(spark)
-    df_gold = aggregate_and_join(df_vendas, df_pedidos, df_itens, df_pedido_venda)
-    save_gold_data(df_gold)
-except Exception as e:
-    logger.exception("❌ Erro ao gerar df_gold_vendas:")
-    raise
+    try:
+        logger.info("📥 Carregando dados da camada processed...")
+        df_vendas, df_pedidos, df_itens, df_pedido_venda = load_processed_data(spark)
 
-spark_wrapper.stop()
+        logger.info("🔄 Iniciando joins e agregações para gerar camada gold...")
+        df_gold = aggregate_and_join(df_vendas, df_pedidos, df_itens, df_pedido_venda)
+
+        logger.info("💾 Salvando camada gold de vendas...")
+        save_gold_data(df_gold)
+
+        logger.info("✅ Pipeline finalizada com sucesso.")
+    except Exception as e:
+        logger.exception("❌ Erro ao gerar df_gold_vendas:")
+        raise
+    finally:
+        spark_wrapper.stop()
+        logger.info("🛑 Sessão Spark finalizada.")
+
+
+if __name__ == "__main__":
+    main()

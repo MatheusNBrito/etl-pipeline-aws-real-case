@@ -1,13 +1,37 @@
 from datapipelines.generate_vendas.commons.spark_session import SparkSessionWrapper
-from datapipelines.generate_vendas.commons.etl_steps import load_raw_data, apply_transformations, save_processed_data
+from datapipelines.generate_vendas.commons.etl_steps import (
+    load_raw_data,
+    apply_transformations,
+    save_processed_data
+)
+from datapipelines.logger_config import get_logger
 
-# Inicia Spark
-spark_wrapper = SparkSessionWrapper(app_name="GenerateVendasSparkSession")
-spark = spark_wrapper.get_session()
+logger = get_logger("raw_to_processed_vendas")
 
-# Executa pipeline
-df_raws = load_raw_data(spark)
-df_processed = apply_transformations(df_raws)
-save_processed_data(df_processed)
 
-spark_wrapper.stop()
+def main():
+    logger.info("▶ Iniciando sessão Spark para carga da camada processed.")
+    spark_wrapper = SparkSessionWrapper(app_name="GenerateVendasSparkSession")
+    spark = spark_wrapper.get_session()
+
+    try:
+        logger.info("📥 Lendo dados brutos da camada raw...")
+        df_raws = load_raw_data(spark)
+
+        logger.info("🔧 Aplicando transformações...")
+        df_processed = apply_transformations(df_raws)
+
+        logger.info("💾 Salvando arquivos na camada processed...")
+        save_processed_data(df_processed)
+
+        logger.info("✅ Pipeline raw_to_processed finalizada com sucesso.")
+    except Exception as e:
+        logger.exception("❌ Erro na pipeline raw_to_processed:")
+        raise
+    finally:
+        spark_wrapper.stop()
+        logger.info("🛑 Sessão Spark finalizada.")
+
+
+if __name__ == "__main__":
+    main()
