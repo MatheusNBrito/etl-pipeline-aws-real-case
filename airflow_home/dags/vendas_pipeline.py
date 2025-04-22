@@ -3,7 +3,7 @@ from airflow.operators.bash import BashOperator
 from datetime import datetime, timedelta
 
 default_args = {
-    "owner": "theuzao",
+    "owner": "MatheusNbrito",
     "retries": 1,
     "retry_delay": timedelta(minutes=2),
 }

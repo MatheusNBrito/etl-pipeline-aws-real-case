@@ -9,4 +9,11 @@ logs/
 *.ipynb_checkpoints
 /data/
 /logs/
-/books/
+etl-key-aws.pem
+
+# Terraform cache
+.terraform/
+*.tfstate
+*.tfstate.backup
+echo ".terraform/" >> .gitignore
+

@@ -37,6 +37,8 @@ services:
       # Configurações do Airflow
       - ./airflow_home:/opt/airflow
 
+      - ./data:/app/data
+
     command: bash -c "airflow db init && airflow webserver"
 
 volumes:
