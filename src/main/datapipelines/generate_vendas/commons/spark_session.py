@@ -17,6 +17,12 @@ class SparkSessionWrapper:
             .config("spark.sql.adaptive.enabled", "false") \
             .getOrCreate()
         
+        #  Configurações necessárias para leitura e escrita com s3a://
+        hadoop_conf = self.spark._jsc.hadoopConfiguration()
+        hadoop_conf.set("fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem")
+        hadoop_conf.set("fs.s3a.endpoint", "s3.us-east-2.amazonaws.com")
+        hadoop_conf.set("fs.s3a.aws.credentials.provider", "com.amazonaws.auth.DefaultAWSCredentialsProviderChain")
+
         logger.info(f"✅ Spark session started with app: {app_name}")
 
     def get_session(self):
