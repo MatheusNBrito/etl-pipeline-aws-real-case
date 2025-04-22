@@ -1,19 +1,56 @@
-__pycache__/
-*.pyc
-*.logs
-.env
-logs/
-*.zip
-.idea/
-.vscode/
-*.ipynb_checkpoints
-/data/
-/logs/
-etl-key-aws.pem
-
-# Terraform cache
+# Terraform
 .terraform/
 *.tfstate
 *.tfstate.backup
-echo ".terraform/" >> .gitignore
+crash.log
+override.tf
+override.tf.json
+.terraform.lock.hcl
 
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.env
+.env.*
+
+# Airflow
+airflow_home/airflow.db
+airflow_home/unittests.cfg
+airflow_home/logs/
+airflow.cfg
+webserver_config.py
+
+# Docker
+*.log
+*.pid
+
+# VSCodium / VSCode
+.vscode/
+.idea/
+
+# Dados sensíveis e chaves
+*.pem
+*.key
+*.crt
+
+# Arquivos temporários e de sistema
+.DS_Store
+Thumbs.db
+*.bak
+*.swp
+
+# PyCharm
+*.iml
+.idea/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Virtualenv
+.venv/
+venv/
+ENV/
+env/
