@@ -20,12 +20,12 @@ with DAG(
 
     raw_to_processed = BashOperator(
         task_id="raw_to_processed",
-        bash_command="python /app/src/main/datapipelines/generate_vendas/commons/etl_steps.py",
+        bash_command="python /app/src/main/datapipelines/generate_vendas/commons/etl_steps_cloud.py",
     )
 
     processed_to_gold = BashOperator(
         task_id="processed_to_gold",
-        bash_command="python /app/src/main/datapipelines/generate_vendas/commons/etl_steps_gold.py",
+        bash_command="python /app/src/main/datapipelines/generate_vendas/commons/etl_steps_gold_cloud.py",
     )
 
     raw_to_processed >> processed_to_gold

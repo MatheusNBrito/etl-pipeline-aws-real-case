@@ -11,6 +11,25 @@ resource "aws_s3_bucket" "etl_bucket" {
   })
 }
 
+# Criando as "pastas" raw, processed, gold no S3 com aws_s3_object
+resource "aws_s3_object" "raw" {
+  bucket = aws_s3_bucket.etl_bucket.bucket
+  key    = "raw/"
+  acl    = "private"
+}
+
+resource "aws_s3_object" "processed" {
+  bucket = aws_s3_bucket.etl_bucket.bucket
+  key    = "processed/"
+  acl    = "private"
+}
+
+resource "aws_s3_object" "gold" {
+  bucket = aws_s3_bucket.etl_bucket.bucket
+  key    = "gold/"
+  acl    = "private"
+}
+
 # EC2 para execução dos jobs Spark e Airflow
 resource "aws_instance" "etl_ec2" {
   ami                         = var.ami_id
