@@ -18,9 +18,13 @@ RUN apt-get update && \
 # Instalação do Apache Spark
 RUN mkdir -p /opt/spark && \
     cd /opt/spark && \
-    wget -q https://dlcdn.apache.org/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop3.tgz && \
-    tar xzf spark-${SPARK_VERSION}-bin-hadoop3.tgz --strip-components=1 && \
-    rm spark-${SPARK_VERSION}-bin-hadoop3.tgz
+    ( \
+      wget -q https://dlcdn.apache.org/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz || \
+      wget -q https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz || \
+      wget -q https://downloads.apache.org/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz \
+    ) && \
+    tar xzf spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz --strip-components=1 && \
+    rm spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz
 
 ENV SPARK_HOME=/opt/spark
 ENV PATH=$PATH:$SPARK_HOME/bin
