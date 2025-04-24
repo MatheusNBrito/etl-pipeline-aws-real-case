@@ -11,35 +11,43 @@ services:
     volumes:
       - postgres-db-volume:/var/lib/postgresql/data
 
-  etl-container:
+  airflow-webserver:
     build: .
-    container_name: etl-container
+    container_name: airflow-webserver
     depends_on:
       - postgres
     environment:
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
-      AIRFLOW__CORE__LOAD_EXAMPLES: 'False'
       AIRFLOW__CORE__DAGS_FOLDER: /opt/airflow/dags
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'False'
     ports:
       - "8081:8080"
-      - "8888:8888"
     volumes:
-      # DAGs das pipelines
       - ./airflow_home/dags:/opt/airflow/dags
-
-            # Scripts utilitários chamados pelas DAGs
-      - ./src:/app/src
-      
-      # Logs do Airflow
       - ./logs:/opt/airflow/logs
-      
-      # Configurações do Airflow
       - ./airflow_home:/opt/airflow
-
+      - ./src:/app/src
       - ./data:/app/data
+    command: airflow webserver
 
-    command: bash -c "airflow db init && airflow webserver"
+  airflow-scheduler:
+    build: .
+    container_name: airflow-scheduler
+    depends_on:
+      - postgres
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__CORE__DAGS_FOLDER: /opt/airflow/dags
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'False'
+    volumes:
+      - ./airflow_home/dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./airflow_home:/opt/airflow
+      - ./src:/app/src
+      - ./data:/app/data
+    command: airflow scheduler
 
 volumes:
   postgres-db-volume:
