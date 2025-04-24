@@ -15,17 +15,12 @@ RUN apt-get update && \
     apt-get install -y curl wget openjdk-17-jdk git netcat-openbsd unzip && \
     apt-get clean
 
-# Instalação do Apache Spark (MANTIDO, só adicionei verificação)
+# Instalação do Apache Spark 
+COPY spark.tgz /tmp/spark.tgz
 RUN mkdir -p /opt/spark && \
-    cd /opt/spark && \
-    ( \
-      wget --tries=3 --waitretry=30 -q https://dlcdn.apache.org/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz || \
-      wget --tries=3 --waitretry=30 -q https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz || \
-      wget --tries=3 --waitretry=30 -q https://downloads.apache.org/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz \
-    ) && \
-    tar xzf spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz --strip-components=1 && \
-    rm spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz && \
-    echo "Spark $(/opt/spark/bin/spark-submit --version 2>&1 | grep version)"  # Verificação
+    tar xzf /tmp/spark.tgz -C /opt/spark --strip-components=1 && \
+    rm /tmp/spark.tgz && \
+    echo "Spark instalado em: $(ls /opt/spark)"
 
 ENV SPARK_HOME=/opt/spark
 ENV PATH=$PATH:$SPARK_HOME/bin
