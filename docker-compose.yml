@@ -11,10 +11,10 @@ services:
     volumes:
       - postgres-db-volume:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U airflow"]
-      interval: 10s
+      test: ["CMD-SHELL", "pg_isready -U airflow -d airflow"]  # Adicionei -d airflow
+      interval: 5s  # Reduzi para 5s
       timeout: 5s
-      retries: 5
+      retries: 10   # Aumentei tentativas
 
   airflow:
     build: .
@@ -24,11 +24,11 @@ services:
         condition: service_healthy
     environment:
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
-      AIRFLOW__CORE__EXECUTOR: LocalExecutor  # Mantém compatibilidade com seu setup
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
       AIRFLOW__CORE__DAGS_FOLDER: /opt/airflow/dags
       AIRFLOW__CORE__LOAD_EXAMPLES: 'False'
     ports:
-      - "8081:8080"  
+      - "8081:8080"
     volumes:
       - ./airflow_home/dags:/opt/airflow/dags
       - ./logs:/opt/airflow/logs
@@ -37,6 +37,10 @@ services:
       - ./data:/app/data
     command: >
       bash -c "
+      while ! pg_isready -h postgres -U airflow -d airflow -q; do
+        echo 'Aguardando PostgreSQL...'
+        sleep 5
+      done &&
       airflow db init &&
       airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com &&
       airflow standalone
