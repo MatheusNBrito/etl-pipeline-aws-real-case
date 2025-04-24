@@ -16,11 +16,15 @@ RUN apt-get update && \
     apt-get clean
 
 # Instalação do Apache Spark 
-COPY spark.tgz /tmp/spark.tgz
 RUN mkdir -p /opt/spark && \
-    tar xzf /tmp/spark.tgz -C /opt/spark --strip-components=1 && \
-    rm /tmp/spark.tgz && \
-    echo "Spark instalado em: $(ls /opt/spark)"
+    cd /opt/spark && \
+    ( \
+      wget -t 3 --waitretry=30 --no-check-certificate https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz || \
+      wget -t 3 --waitretry=30 --no-check-certificate https://dlcdn.apache.org/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz || \
+      wget -t 3 --waitretry=30 --no-check-certificate https://ftp.unicamp.br/pub/apache/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz \
+    ) && \
+    tar xzf spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz --strip-components=1 && \
+    rm spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz
 
 ENV SPARK_HOME=/opt/spark
 ENV PATH=$PATH:$SPARK_HOME/bin
