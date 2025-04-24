@@ -1,4 +1,5 @@
 /data/
+/spark.tgz
 
 # Arquivos de build grandes (Spark)
 /spark.tgz       
