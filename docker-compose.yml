@@ -10,44 +10,37 @@ services:
       POSTGRES_DB: airflow
     volumes:
       - postgres-db-volume:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U airflow"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-  airflow-webserver:
+  airflow:
     build: .
-    container_name: airflow-webserver
+    container_name: airflow-standalone
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     environment:
-      AIRFLOW__CORE__EXECUTOR: SequentialExecutor
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor  # Mantém compatibilidade com seu setup
       AIRFLOW__CORE__DAGS_FOLDER: /opt/airflow/dags
       AIRFLOW__CORE__LOAD_EXAMPLES: 'False'
     ports:
-      - "8081:8080"
+      - "8081:8080"  
     volumes:
       - ./airflow_home/dags:/opt/airflow/dags
       - ./logs:/opt/airflow/logs
       - ./airflow_home:/opt/airflow
       - ./src:/app/src
       - ./data:/app/data
-    command: airflow webserver
-
-  airflow-scheduler:
-    build: .
-    container_name: airflow-scheduler
-    depends_on:
-      - postgres
-    environment:
-      AIRFLOW__CORE__EXECUTOR: LocalExecutor
-      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
-      AIRFLOW__CORE__DAGS_FOLDER: /opt/airflow/dags
-      AIRFLOW__CORE__LOAD_EXAMPLES: 'False'
-    volumes:
-      - ./airflow_home/dags:/opt/airflow/dags
-      - ./logs:/opt/airflow/logs
-      - ./airflow_home:/opt/airflow
-      - ./src:/app/src
-      - ./data:/app/data
-    command: airflow scheduler
+    command: >
+      bash -c "
+      airflow db init &&
+      airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com &&
+      airflow standalone
+      "
 
 volumes:
   postgres-db-volume:
