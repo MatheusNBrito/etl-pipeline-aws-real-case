@@ -48,7 +48,6 @@ ENV PYTHONPATH="/app/src/main"
 COPY requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
-
 # Expõe Airflow (8080) e Jupyter (8888)
 EXPOSE 8080 8888
 
