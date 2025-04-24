@@ -1,17 +1,35 @@
 #!/bin/bash
 
-echo "⏳ Verificando se o banco do Airflow já está inicializado..."
+echo "⏳ Verificando se o PostgreSQL está pronto..."
+
+# Espera o PostgreSQL ficar saudável
+while ! docker-compose exec postgres pg_isready -U airflow > /dev/null 2>&1; do
+  sleep 5
+  echo "Aguardando PostgreSQL..."
+done
+
+echo "✅ PostgreSQL está pronto!"
+
+echo "⚙️ Verificando se o banco do Airflow já está inicializado..."
 
 # Verifica se a tabela core_dag existe no banco
-docker-compose run --rm airflow-webserver bash -c "airflow db check" > /dev/null 2>&1
-
-if [ $? -eq 0 ]; then
-  echo "✅ Banco de dados já está inicializado. Pulando 'airflow db init'."
+if docker-compose exec airflow airflow db check > /dev/null 2>&1; then
+  echo "✅ Banco de dados já está inicializado."
 else
-  echo "⚙️ Banco não encontrado. Executando 'airflow db init'..."
-  docker-compose run --rm airflow-webserver airflow db init
-  echo "✅ Banco de dados inicializado com sucesso."
+  echo "⚙️ Inicializando banco de dados..."
+  docker-compose exec airflow airflow db init
+  docker-compose exec airflow airflow users create \
+    --username admin \
+    --password admin \
+    --firstname Admin \
+    --lastname User \
+    --role Admin \
+    --email admin@example.com
+  echo "✅ Banco inicializado com usuário admin (senha: admin)."
 fi
 
-echo "🚀 Subindo os containers do Airflow..."
-docker-compose up
+echo "🚀 Iniciando Airflow Standalone..."
+docker-compose up -d airflow
+
+echo "🔍 Acesse o Airflow em: http://$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4):8081"
+echo "👤 Usuário: admin | Senha: admin"
