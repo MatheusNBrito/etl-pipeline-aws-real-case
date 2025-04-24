@@ -33,7 +33,7 @@ ENV AIRFLOW_VERSION=2.7.3
 ENV CONSTRAINT_URL=https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/constraints-3.10.txt
 
 RUN pip install "apache-airflow==${AIRFLOW_VERSION}" --constraint "${CONSTRAINT_URL}" && \
-    pip install psycopg2-binary pandas boto3 pyarrow pyspark==${SPARK_VERSION}
+    pip install psycopg2-binary boto3 pyspark==${SPARK_VERSION}
     
 # Instalação do Jupyter e suas dependências
 RUN pip install notebook ipykernel jupyterlab jupyter_server
@@ -48,11 +48,6 @@ ENV PYTHONPATH="/app/src/main"
 COPY requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
-
-
-
-# Inicialização do banco do Airflow
-RUN airflow db init
 
 # Expõe Airflow (8080) e Jupyter (8888)
 EXPOSE 8080 8888

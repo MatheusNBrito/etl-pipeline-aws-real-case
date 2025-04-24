@@ -33,7 +33,7 @@ resource "aws_s3_object" "gold" {
 # EC2 para execução dos jobs Spark e Airflow
 resource "aws_instance" "etl_ec2" {
   ami                         = var.ami_id
-  instance_type               = "t2.micro"
+  instance_type               = "t3.micro"
   key_name                    = var.key_name
   associate_public_ip_address = true
   vpc_security_group_ids      = [aws_security_group.etl_sg.id]
