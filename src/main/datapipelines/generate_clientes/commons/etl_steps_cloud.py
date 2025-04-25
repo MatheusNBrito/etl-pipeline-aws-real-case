@@ -1,3 +1,4 @@
+import boto3
 from datapipelines.generate_clientes.commons.functions import DataLoader, save_parquet
 from datapipelines.generate_clientes.config_loader import config
 from datapipelines.generate_clientes.transformations.transform_clientes_opt import transform_clientes_opt
@@ -31,6 +32,18 @@ def save_processed_data(df_tuple):
     df_clientes, df_clientes_opt, df_enderecos = df_tuple
     paths = config["output_paths"]["processed_tables"]
 
+    # Salva localmente em S3 (vai ser criado no diretório temporário primeiro)
     save_parquet(df_clientes, paths["CLIENTES_PATH"])
     save_parquet(df_clientes_opt, paths["CLIENTES_OPT_PATH"])
     save_parquet(df_enderecos, paths["ENDERECOS_CLIENTES_PATH"])
+
+    # Aqui faz o upload para o S3 após salvar o arquivo
+    s3 = boto3.client('s3')
+    bucket_name = 'etl-pipeline-aws-dev-bucket'  # Seu bucket S3
+
+    # Upload dos arquivos processados para o S3
+    s3.upload_file(paths["CLIENTES_PATH"], bucket_name, 'processed/clientes.parquet')
+    s3.upload_file(paths["CLIENTES_OPT_PATH"], bucket_name, 'processed/clientes_opt.parquet')
+    s3.upload_file(paths["ENDERECOS_CLIENTES_PATH"], bucket_name, 'processed/enderecos_clientes.parquet')
+
+    print("Arquivos processados enviados para o S3 com sucesso!")
