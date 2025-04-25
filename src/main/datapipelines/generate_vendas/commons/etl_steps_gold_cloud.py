@@ -8,14 +8,12 @@ import gc
 
 logger = logging.getLogger(__name__)
 
-
 def load_processed_data(spark):
     """Carrega os dados da camada processed (S3 direto)"""
     processed_paths = config["input_paths"]["processed_tables"]
 
     loader = DataLoader(spark)
     return loader.load_processed_data(processed_paths)
-
 
 def join_vendas_com_canal(df_vendas: DataFrame, df_pedido_venda: DataFrame, df_pedidos: DataFrame) -> DataFrame:
     """Join entre vendas, pedido_venda e pedidos"""
@@ -30,7 +28,6 @@ def join_vendas_com_canal(df_vendas: DataFrame, df_pedido_venda: DataFrame, df_p
         how="left"
     )
     return df_vendas_com_canal
-
 
 def aggregate_and_join(df_vendas, df_pedidos, df_itens_vendas, df_pedido_venda):
     """Executa joins e gera o DataFrame gold"""
@@ -59,16 +56,17 @@ def aggregate_and_join(df_vendas, df_pedidos, df_itens_vendas, df_pedido_venda):
     logger.info("Dataframe gold final gerado com sucesso!")
     return df_gold
 
-
 def save_gold_data(df_gold: DataFrame):
-    """Trata nulos e salva a camada gold (S3)"""
+    """Trata nulos e salva a camada gold diretamente no S3"""
+    # Caminho de saída configurado para o S3
     path = config["output_paths"]["gold_tables"]["VENDAS_PATH"]
 
     df_gold = replace_null_canal_venda(df_gold)
-    df_gold = df_gold.coalesce(1)
+    df_gold = df_gold.coalesce(1)  # Une tudo em um único arquivo
 
     logger.info("⏳ Liberando memória antes de salvar o parquet...")
     gc.collect()
 
+    # Salvando no S3
     save_parquet(df_gold, path)
     logger.info("✅ Arquivo gold salvo com sucesso em: %s", path)

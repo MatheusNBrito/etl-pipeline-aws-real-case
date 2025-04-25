@@ -11,19 +11,23 @@ def load_raw_data(spark):
     raw_paths = config["input_paths"]["raw_tables"]
 
     loader = DataLoader(spark)
-    return loader.load_raw_data(raw_paths)
+    # Carrega os dados das tabelas raw
+    df_vendas_raw, df_pedidos_raw, df_itens_vendas_raw, df_pedido_venda_raw = loader.load_raw_data(raw_paths)
+
+    return df_vendas_raw, df_pedidos_raw, df_itens_vendas_raw, df_pedido_venda_raw
 
 
 def apply_transformations(df_tuple):
     """Aplica as transformações nos DataFrames carregados"""
     df_vendas, df_pedidos, df_itens_vendas, df_pedido_venda = df_tuple
 
-    return (
-        transform_vendas(df_vendas),
-        transform_pedidos(df_pedidos),
-        transform_itens_vendas(df_itens_vendas),
-        transform_pedido_venda(df_pedido_venda)
-    )
+    # Realiza as transformações nos DataFrames de vendas, pedidos, itens de vendas e pedido de venda
+    df_transformed_vendas = transform_vendas(df_vendas)
+    df_transformed_pedidos = transform_pedidos(df_pedidos)
+    df_transformed_itens_vendas = transform_itens_vendas(df_itens_vendas)
+    df_transformed_pedido_venda = transform_pedido_venda(df_pedido_venda)
+
+    return df_transformed_vendas, df_transformed_pedidos, df_transformed_itens_vendas, df_transformed_pedido_venda
 
 
 def save_processed_data(df_tuple):
@@ -31,6 +35,7 @@ def save_processed_data(df_tuple):
     df_vendas, df_pedidos, df_itens_vendas, df_pedido_venda = df_tuple
     paths = config["output_paths"]["processed_tables"]
 
+    # Salva os dados processados nas tabelas correspondentes
     save_parquet(df_vendas, paths["VENDAS_PATH"])
     save_parquet(df_pedidos, paths["PEDIDOS_PATH"])
     save_parquet(df_itens_vendas, paths["ITENS_VENDA_PATH"])
