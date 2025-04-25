@@ -1,5 +1,6 @@
 variable "region" {
-  default = "us-east-2"
+  description = "Região AWS"
+  default     = "us-east-2"
 }
 
 variable "project" {
@@ -15,17 +16,24 @@ variable "environment" {
 variable "tags" {
   description = "Tags padrão para todos os recursos"
   type        = map(string)
-}
-
-variable "s3_bucket_name" {
-  default = "nao-utilizado-mais"
-}
-
-variable "ami_id" {
-  default = "ami-0945157a116cd5d12"
+  default     = {
+    Project     = "DataEngineeringPortfolio"
+    ManagedBy   = "Terraform"
+    Environment = "dev"
+  }
 }
 
 variable "key_name" {
   description = "Nome da chave SSH"
+  type        = string
+}
+
+variable "alert_email" {
+  description = "Email para receber alertas"
+  type        = string
+}
+
+variable "my_ip" {
+  description = "Seu IP para acesso SSH (formato: xxx.xxx.xxx.xxx/32)"
   type        = string
 }
