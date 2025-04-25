@@ -5,15 +5,16 @@ LABEL maintainer="Matheus Brito"
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Versões do Spark e Hadoop (MANTIDO)
+# Versões do Spark e Hadoop 
 ENV SPARK_VERSION=3.5.0
 ENV HADOOP_VERSION=3
 ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 
-# Instalação de dependências (MANTIDO)
+# Instalação de dependências 
 RUN apt-get update && \
-    apt-get install -y curl wget openjdk-17-jdk git netcat-openbsd unzip && \
+    apt-get install -y curl wget openjdk-17-jdk git netcat-openbsd unzip postgresql-client && \
     apt-get clean
+
 
 # Instalação do Apache Spark 
 RUN mkdir -p /opt/spark && \
@@ -41,9 +42,6 @@ RUN pip install "apache-airflow==${AIRFLOW_VERSION}" --constraint "${CONSTRAINT_
     pip install psycopg2-binary boto3 pyspark==${SPARK_VERSION} && \
     airflow version  # Verificação
     
-# Instalação do Jupyter (MANTIDO)
-RUN pip install notebook ipykernel jupyterlab jupyter_server
-
 # Criação da pasta de trabalho (MANTIDO)
 WORKDIR /app
 COPY . /app
@@ -56,4 +54,4 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 
 EXPOSE 8080 8888
 
-CMD ["airflow", "standalone"]
+# CMD ["airflow", "standalone"]

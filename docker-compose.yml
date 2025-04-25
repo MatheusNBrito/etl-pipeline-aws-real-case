@@ -27,6 +27,7 @@ services:
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
       AIRFLOW__CORE__DAGS_FOLDER: /opt/airflow/dags
       AIRFLOW__CORE__LOAD_EXAMPLES: 'False'
+      AIRFLOW__WEBSERVER__WORKERS: 1
     ports:
       - "8081:8080"
     volumes:
@@ -37,13 +38,24 @@ services:
       - ./data:/app/data
     command: >
       bash -c "
-      while ! pg_isready -h postgres -U airflow -d airflow -q; do
-        echo 'Aguardando PostgreSQL...'
-        sleep 5
-      done &&
-      airflow db init &&
-      airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com &&
-      airflow standalone
+        echo '🔄 Aguardando PostgreSQL...' &&
+        while ! pg_isready -h postgres -U airflow -d airflow -q; do
+          sleep 5;
+        done &&
+        echo '✅ PostgreSQL pronto!' &&
+
+        airflow db migrate &&
+
+        airflow users create \
+          --username admin \
+          --password admin \
+          --firstname Admin \
+          --lastname User \
+          --role Admin \
+          --email admin@example.com || true &&
+
+        echo '🚀 Iniciando Airflow Standalone...' &&
+        airflow standalone
       "
 
 volumes:
