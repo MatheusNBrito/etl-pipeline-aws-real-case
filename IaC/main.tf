@@ -41,7 +41,7 @@ resource "aws_s3_object" "folders" {
 # EC2 melhorado
 resource "aws_instance" "etl_ec2" {
   ami                         = data.aws_ami.ubuntu.id
-  instance_type               = "m5.large"
+  instance_type               = "m5.xlarge"
   key_name                    = var.key_name
   associate_public_ip_address = true
   vpc_security_group_ids      = [aws_security_group.etl_sg.id]
