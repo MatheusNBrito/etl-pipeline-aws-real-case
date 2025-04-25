@@ -61,4 +61,4 @@ Thumbs.db
 .venv/
 venv/
 ENV/
-env/
+env/*
