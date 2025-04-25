@@ -14,7 +14,7 @@ tags = {
 }
 
 # IP que terá acesso ao SSH (formato CIDR)
-my_ip = "191.217.211.182" 
+my_ip = "191.217.211.182/32" 
 
 # Email que receberá os alertas da instância
 alert_email = "matheusnunesdebrito@gmail.com"

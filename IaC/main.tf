@@ -41,7 +41,7 @@ resource "aws_s3_object" "folders" {
 # EC2 melhorado
 resource "aws_instance" "etl_ec2" {
   ami                         = data.aws_ami.ubuntu.id
-  instance_type               = "t2.micro"
+  instance_type               = "t3.small"
   key_name                    = var.key_name
   associate_public_ip_address = true
   vpc_security_group_ids      = [aws_security_group.etl_sg.id]
@@ -54,7 +54,7 @@ resource "aws_instance" "etl_ec2" {
 
   root_block_device {
     encrypted   = true
-    volume_size = 20
+    volume_size = 8
   }
 
   tags = merge(var.tags, {
@@ -81,9 +81,9 @@ resource "aws_security_group" "etl_sg" {
     cidr_blocks = [var.my_ip]
   }
 
-  # Airflow Web (mantendo sua porta 88)
+  # Airflow Web 
   ingress {
-    description = "Airflow Webserver"
+    description = "HTTP"
     from_port   = 88
     to_port     = 88
     protocol    = "tcp"
@@ -92,9 +92,9 @@ resource "aws_security_group" "etl_sg" {
 
   # Porta 81 mantida para compatibilidade
   ingress {
-    description = "HTTP"
-    from_port   = 81
-    to_port     = 81
+    description = "Airflow Webserver"
+    from_port   = 8081
+    to_port     = 8081
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
