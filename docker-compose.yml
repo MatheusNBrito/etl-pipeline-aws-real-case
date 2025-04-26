@@ -11,10 +11,10 @@ services:
     volumes:
       - postgres-db-volume:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U airflow -d airflow"]  # Adicionei -d airflow
-      interval: 5s  # Reduzi para 5s
+      test: ["CMD-SHELL", "pg_isready -U airflow -d airflow"]
+      interval: 5s
       timeout: 5s
-      retries: 10   # Aumentei tentativas
+      retries: 10
 
   airflow:
     build: .
@@ -36,6 +36,7 @@ services:
       - ./airflow_home:/opt/airflow
       - ./src:/app/src
       - ./data:/app/data
+      - /var/run/docker.sock:/var/run/docker.sock  # 👈 Permite rodar Docker dentro do container
     command: >
       bash -c "
         echo '🔄 Aguardando PostgreSQL...' &&
@@ -46,29 +47,24 @@ services:
 
         airflow db migrate &&
 
-        airflow users create \
-          --username admin \
-          --password admin \
-          --firstname Admin \
-          --lastname User \
-          --role Admin \
-          --email admin@example.com || true &&
+        airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com || true &&
 
         echo '🚀 Iniciando Airflow Standalone...' &&
         airflow standalone
       "
-  spark:
-        image: bitnami/spark:latest
-        container_name: spark-master
-        environment:
-          - SPARK_MODE=master
-        ports:
-          - "7077:7077"
-          - "8080:8080"
-        volumes:
-          - ./src:/app/src
-          - ./data:/app/data    
 
+
+  spark:
+    image: bitnami/spark:latest
+    container_name: spark-master
+    environment:
+      - SPARK_MODE=master
+    ports:
+      - "7077:7077"
+      - "8082:8080"  # 👈 Mudando porta 8080 pra 8082 (pra não conflitar com Airflow UI!)
+    volumes:
+      - ./src:/app/src
+      - ./data:/app/data
 
 volumes:
   postgres-db-volume:

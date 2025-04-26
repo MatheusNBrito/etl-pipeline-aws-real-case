@@ -1,9 +1,9 @@
-pyhocon==0.3.59
-python-dotenv==1.0.1
-pandas==2.2.1
-boto3==1.26.4
-pyarrow==14.0.2
-pyspark==3.5.0
-apache-airflow==2.7.3
-notebook==6.5.3
-ipykernel==6.15.2
+# pyhocon==0.3.59
+# python-dotenv==1.0.1
+# pandas==2.2.1
+# boto3==1.26.4
+# pyarrow==14.0.2
+# pyspark==3.5.0
+# apache-airflow==2.7.3
+# notebook==6.5.3
+# ipykernel==6.15.2
