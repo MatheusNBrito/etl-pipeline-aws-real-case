@@ -19,14 +19,16 @@ with DAG(
 ) as dag:  # 👈 já está nomeando como `dag`
 
     raw_to_processed = BashOperator(
-        task_id="raw_to_processed",
-        bash_command="python /app/src/main/datapipelines/generate_clientes/commons/etl_steps_cloud.py",
+    task_id="raw_to_processed",
+    bash_command="cd /app/src/main && PYTHONPATH=/app/src/main python -m datapipelines.generate_clientes.commons.etl_steps",
     )
 
     processed_to_gold = BashOperator(
         task_id="processed_to_gold",
-        bash_command="python /app/src/main/datapipelines/generate_clientes/commons/etl_steps_gold_cloud.py",
+        bash_command="cd /app/src/main && PYTHONPATH=/app/src/main python -m datapipelines.generate_clientes.commons.etl_steps_gold",
     )
+
+
 
     raw_to_processed >> processed_to_gold
 

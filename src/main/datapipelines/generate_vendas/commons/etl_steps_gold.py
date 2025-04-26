@@ -4,6 +4,7 @@ from pyspark.sql import DataFrame
 from datapipelines.generate_vendas.commons.constants import *
 from datapipelines.generate_vendas.commons.functions import DataLoader, save_parquet, replace_null_canal_venda
 from datapipelines.generate_vendas.config_loader import config
+from datapipelines.generate_vendas.commons.spark_session import SparkSessionWrapper  
 import logging
 import gc
 
@@ -79,3 +80,16 @@ def save_gold_data(df_gold: DataFrame):
 
     save_parquet(df_gold, full_path)
     logger.info("✅ Arquivo gold salvo com sucesso em: %s", full_path)
+
+
+if __name__ == "__main__":
+    from datapipelines.generate_vendas.commons.spark_session import SparkSessionWrapper
+
+    spark_wrapper = SparkSessionWrapper(app_name="ETLVendasGold")
+    spark = spark_wrapper.get_session()
+
+    df_vendas, df_pedidos, df_itens_vendas, df_pedido_venda = load_processed_data(spark)
+    df_gold = aggregate_and_join(df_vendas, df_pedidos, df_itens_vendas, df_pedido_venda)
+    save_gold_data(df_gold)
+
+    spark_wrapper.stop()

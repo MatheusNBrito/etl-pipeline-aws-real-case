@@ -3,6 +3,7 @@ from datapipelines.generate_clientes.config_loader import config
 from datapipelines.generate_clientes.transformations.transform_clientes_opt import transform_clientes_opt
 from datapipelines.generate_clientes.transformations.transform_enderecos_clientes import transform_enderecos_clientes
 from datapipelines.generate_clientes.transformations.transform_clientes import transform_clientes
+from datapipelines.generate_clientes.commons.spark_session import SparkSessionWrapper
 from pathlib import Path
 
 BASE_DIR = Path("/app")
@@ -31,6 +32,9 @@ def apply_transformations(df_tuple):
     df_transformed_clientes_opt = transform_clientes_opt(df_clientes_opt)
     df_transformed_enderecos = transform_enderecos_clientes(df_enderecos)
 
+    print(f"Número de registros no DataFrame Clientes: {df_transformed_clientes.count()}")
+    df_transformed_clientes.show(5)
+
     return df_transformed_clientes, df_transformed_clientes_opt, df_transformed_enderecos
 
 
@@ -42,3 +46,17 @@ def save_processed_data(df_tuple):
     save_parquet(df_clientes, str(BASE_DIR / paths["CLIENTES_PATH"]))
     save_parquet(df_clientes_opt, str(BASE_DIR / paths["CLIENTES_OPT_PATH"]))
     save_parquet(df_enderecos, str(BASE_DIR / paths["ENDERECOS_CLIENTES_PATH"]))
+
+
+if __name__ == "__main__":
+    # Cria a SparkSession usando seu wrapper
+    spark_wrapper = SparkSessionWrapper(app_name="ETLClientes")
+    spark = spark_wrapper.get_session()
+
+    # Executa o pipeline
+    raw_data = load_raw_data(spark)
+    processed_data = apply_transformations(raw_data)
+    save_processed_data(processed_data)
+
+    # Finaliza a sessão Spark
+    spark_wrapper.stop()

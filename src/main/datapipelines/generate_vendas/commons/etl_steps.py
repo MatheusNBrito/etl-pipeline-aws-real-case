@@ -5,6 +5,7 @@ from datapipelines.generate_vendas.transformations.transform_vendas import trans
 from datapipelines.generate_vendas.transformations.transform_pedidos import transform_pedidos
 from datapipelines.generate_vendas.transformations.transform_itens_vendas import transform_itens_vendas
 from datapipelines.generate_vendas.transformations.transform_pedido_venda import transform_pedido_venda
+from datapipelines.generate_vendas.commons.spark_session import SparkSessionWrapper
 
 BASE_DIR = Path("/app")
 
@@ -42,5 +43,21 @@ def save_processed_data(df_tuple):
 
     save_parquet(df_vendas, str(BASE_DIR / paths["VENDAS_PATH"]))
     save_parquet(df_pedidos, str(BASE_DIR / paths["PEDIDOS_PATH"]))
-    save_parquet(df_itens_vendas, str(BASE_DIR / paths["ITENS_VENDA_PATH"]))
+    if not df_itens_vendas.rdd.isEmpty():
+        save_parquet(df_itens_vendas, str(BASE_DIR / paths["ITENS_VENDA_PATH"]))
+    else:
+        print("⚠️ DataFrame itens_vendas vazio. Não será salvo.")
+
     save_parquet(df_pedido_venda, str(BASE_DIR / paths["PEDIDO_VENDA_PATH"]))
+
+if __name__ == "__main__":
+    from datapipelines.generate_vendas.commons.spark_session import SparkSessionWrapper
+
+    spark_wrapper = SparkSessionWrapper(app_name="ETLVendas")
+    spark = spark_wrapper.get_session()
+
+    dfs = load_raw_data(spark)
+    dfs_transformed = apply_transformations(dfs)
+    save_processed_data(dfs_transformed)
+
+    spark_wrapper.stop()

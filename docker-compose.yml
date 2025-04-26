@@ -57,6 +57,18 @@ services:
         echo '🚀 Iniciando Airflow Standalone...' &&
         airflow standalone
       "
+  spark:
+        image: bitnami/spark:latest
+        container_name: spark-master
+        environment:
+          - SPARK_MODE=master
+        ports:
+          - "7077:7077"
+          - "8080:8080"
+        volumes:
+          - ./src:/app/src
+          - ./data:/app/data    
+
 
 volumes:
   postgres-db-volume:
