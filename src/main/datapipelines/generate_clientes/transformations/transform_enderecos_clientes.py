@@ -2,13 +2,16 @@ from pyspark.sql import DataFrame
 from pyspark.sql.functions import col
 from datapipelines.generate_clientes.commons.constants import *
 
-from datapipelines.generate_clientes.commons.functions import save_parquet
-
 def transform_enderecos_clientes(df: DataFrame) -> DataFrame:
     """
-    Aplica as transformações necessárias no DataFrame de clientes_opt.
+    Transforma o DataFrame de endereços de clientes, renomeando as colunas conforme o padrão da camada processed.
+
+    Args:
+        df (DataFrame): DataFrame original da camada raw.
+
+    Returns:
+        DataFrame: DataFrame transformado para a camada processed.
     """
-    # Altero os nomes das colunas para os nomes finais 
     df_transformed_enderecos_clientes = (
         df.select(
             col(V_ID_CLI).alias(CODIGO_CLIENTE),
@@ -16,6 +19,5 @@ def transform_enderecos_clientes(df: DataFrame) -> DataFrame:
             col(V_LCL).alias(CIDADE),
         )
     )
-    
-    return df_transformed_enderecos_clientes
 
+    return df_transformed_enderecos_clientes

@@ -1,8 +1,10 @@
 import logging
 import sys
 
-
-def get_logger(name: str = "etl-pipeline"):
+def get_logger(name: str = "etl-pipeline") -> logging.Logger:
+    """
+    Cria e configura um logger padrão para o projeto.
+    """
     logger = logging.getLogger(name)
 
     if not logger.hasHandlers():
@@ -14,6 +16,6 @@ def get_logger(name: str = "etl-pipeline"):
         handler.setFormatter(formatter)
         logger.addHandler(handler)
 
-        logger.setLevel(logging.INFO)  
+        logger.setLevel(logging.INFO)
 
     return logger

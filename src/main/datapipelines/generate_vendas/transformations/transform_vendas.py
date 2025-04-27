@@ -6,7 +6,6 @@ def transform_vendas(df: DataFrame) -> DataFrame:
     """
     Aplica as transformações necessárias no DataFrame de vendas
     """
-    # Altero os nomes das colunas para os nomes que o modelo espera
     df_transformed_vendas = (
         df.select(
             col(D_DT_VD).alias(DATA_EMISSAO),

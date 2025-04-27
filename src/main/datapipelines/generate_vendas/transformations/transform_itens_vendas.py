@@ -4,9 +4,8 @@ from datapipelines.generate_vendas.commons.constants import *
 
 def transform_itens_vendas(df: DataFrame) -> DataFrame:
     """
-    Aplica as transformações necessárias no DataFrame de itens_vendas
+    Transforma o DataFrame de itens_vendas, renomeando as colunas conforme o modelo esperado.
     """
-    # Altero os nomes das colunas para os nomes que o modelo espera
     df_transformed_itens_vendas = (
         df.select(
             col(N_ID_IT).alias(CODIGO_ITEM),
@@ -16,9 +15,4 @@ def transform_itens_vendas(df: DataFrame) -> DataFrame:
             col(N_ID_VD_FIL).alias(CODIGO_CUPOM_VENDA)
         )
     )
-    
     return df_transformed_itens_vendas
-
-
-       
-        

@@ -1,8 +1,9 @@
+# Provedor AWS
 provider "aws" {
   region = var.region
 }
 
-# Bucket S3 com boas práticas
+# Bucket S3
 resource "aws_s3_bucket" "etl_bucket" {
   bucket = "${var.project}-${var.environment}-bucket"
 
@@ -11,7 +12,7 @@ resource "aws_s3_bucket" "etl_bucket" {
   })
 }
 
-# Configurações adicionais do S3
+# Configuração de versionamento do bucket S3
 resource "aws_s3_bucket_versioning" "etl_bucket_versioning" {
   bucket = aws_s3_bucket.etl_bucket.id
   versioning_configuration {
@@ -19,6 +20,7 @@ resource "aws_s3_bucket_versioning" "etl_bucket_versioning" {
   }
 }
 
+# Configuração de criptografia do bucket S3
 resource "aws_s3_bucket_server_side_encryption_configuration" "etl_bucket_encryption" {
   bucket = aws_s3_bucket.etl_bucket.id
 
@@ -29,16 +31,16 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "etl_bucket_encryp
   }
 }
 
-# Pastas no S3
+# Criação de pastas no bucket S3
 resource "aws_s3_object" "folders" {
   for_each = toset(["raw/", "processed/", "gold/"])
-  
+
   bucket = aws_s3_bucket.etl_bucket.bucket
   key    = each.value
   acl    = "private"
 }
 
-# EC2 melhorado
+# Instância EC2 para execução do ETL
 resource "aws_instance" "etl_ec2" {
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = "m5.xlarge"
@@ -47,8 +49,8 @@ resource "aws_instance" "etl_ec2" {
   vpc_security_group_ids      = [aws_security_group.etl_sg.id]
   iam_instance_profile        = aws_iam_instance_profile.etl_profile.name
   user_data                   = templatefile("user_data.sh", {
-    s3_bucket = aws_s3_bucket.etl_bucket.bucket
-    airflow_port = 88 # Mantendo sua porta personalizada
+    s3_bucket     = aws_s3_bucket.etl_bucket.bucket,
+    airflow_port  = 88
   })
   subnet_id                   = aws_subnet.public.id
 
@@ -66,13 +68,12 @@ resource "aws_instance" "etl_ec2" {
   }
 }
 
-# Security Group melhorado
+# Security Group para a instância EC2
 resource "aws_security_group" "etl_sg" {
   name        = "${var.project}-sg-${var.environment}"
   description = "Security group controlado para ${var.project}"
   vpc_id      = aws_vpc.main.id
 
-  # SSH restrito
   ingress {
     description = "SSH"
     from_port   = 22
@@ -81,18 +82,16 @@ resource "aws_security_group" "etl_sg" {
     cidr_blocks = [var.my_ip]
   }
 
-  # Airflow Web 
   ingress {
-    description = "HTTP"
+    description = "Airflow Webserver (porta personalizada)"
     from_port   = 88
     to_port     = 88
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  # Porta 81 mantida para compatibilidade
   ingress {
-    description = "Airflow Webserver"
+    description = "Airflow Webserver (porta 8081)"
     from_port   = 8081
     to_port     = 8081
     protocol    = "tcp"
@@ -111,7 +110,7 @@ resource "aws_security_group" "etl_sg" {
   })
 }
 
-# IAM com políticas mais seguras
+# IAM Role para a EC2
 resource "aws_iam_role" "etl_role" {
   name = "${var.project}-ec2-role-${var.environment}"
 
@@ -120,8 +119,10 @@ resource "aws_iam_role" "etl_role" {
     Statement = [
       {
         Effect    = "Allow",
-        Principal = { Service = "ec2.amazonaws.com" },
-        Action    = "sts:AssumeRole"
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        },
+        Action = "sts:AssumeRole"
       }
     ]
   })
@@ -129,15 +130,17 @@ resource "aws_iam_role" "etl_role" {
   tags = var.tags
 }
 
+# Perfil de instância associado à Role
 resource "aws_iam_instance_profile" "etl_profile" {
   name = "${var.project}-instance-profile-${var.environment}"
   role = aws_iam_role.etl_role.name
 }
 
+# Política de acesso da EC2 ao S3 e CloudWatch
 resource "aws_iam_role_policy" "etl_policy" {
   name = "${var.project}-s3-access-${var.environment}"
   role = aws_iam_role.etl_role.id
-  
+
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
@@ -167,7 +170,7 @@ resource "aws_iam_role_policy" "etl_policy" {
   })
 }
 
-# VPC básica
+# VPC principal
 resource "aws_vpc" "main" {
   cidr_block           = "10.0.0.0/16"
   enable_dns_support   = true
@@ -178,6 +181,7 @@ resource "aws_vpc" "main" {
   })
 }
 
+# Sub-rede pública
 resource "aws_subnet" "public" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = "10.0.1.0/24"
@@ -188,6 +192,7 @@ resource "aws_subnet" "public" {
   })
 }
 
+# Internet Gateway
 resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.main.id
 
@@ -196,6 +201,7 @@ resource "aws_internet_gateway" "gw" {
   })
 }
 
+# Tabela de rotas para a sub-rede pública
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
 
@@ -209,12 +215,13 @@ resource "aws_route_table" "public" {
   })
 }
 
+# Associação da tabela de rotas com a sub-rede pública
 resource "aws_route_table_association" "public" {
   subnet_id      = aws_subnet.public.id
   route_table_id = aws_route_table.public.id
 }
 
-# AMI mais recente do Ubuntu
+# AMI mais recente do Ubuntu 20.04
 data "aws_ami" "ubuntu" {
   most_recent = true
 
@@ -231,7 +238,7 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"] # Canonical
 }
 
-# CloudWatch para monitoramento
+# Monitoramento de CPU da EC2 no CloudWatch
 resource "aws_cloudwatch_metric_alarm" "ec2_cpu" {
   alarm_name          = "${var.project}-high-cpu-${var.environment}"
   comparison_operator = "GreaterThanOrEqualToThreshold"
@@ -241,8 +248,9 @@ resource "aws_cloudwatch_metric_alarm" "ec2_cpu" {
   period              = "120"
   statistic           = "Average"
   threshold           = "80"
-  alarm_description   = "Monitora uso alto de CPU na instância ETL"
+  alarm_description   = "Alerta de alta utilização de CPU"
   alarm_actions       = [aws_sns_topic.alerts.arn]
+
   dimensions = {
     InstanceId = aws_instance.etl_ec2.id
   }
@@ -250,10 +258,12 @@ resource "aws_cloudwatch_metric_alarm" "ec2_cpu" {
   tags = var.tags
 }
 
+# SNS Topic para envio de alertas
 resource "aws_sns_topic" "alerts" {
   name = "${var.project}-alerts-${var.environment}"
 }
 
+# Assinatura do SNS para envio por e-mail
 resource "aws_sns_topic_subscription" "email" {
   topic_arn = aws_sns_topic.alerts.arn
   protocol  = "email"

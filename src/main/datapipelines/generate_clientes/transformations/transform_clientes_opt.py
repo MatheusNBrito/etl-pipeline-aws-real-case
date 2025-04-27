@@ -15,9 +15,14 @@ from datapipelines.generate_clientes.commons.constants import (
 
 def transform_clientes_opt(df: DataFrame) -> DataFrame:
     """
-    Aplica as transformações necessárias no DataFrame de clientes_opt.
+    Transforma o DataFrame de clientes_opt, renomeando as colunas e preenchendo nulos com False.
+
+    Args:
+        df (DataFrame): DataFrame original da camada raw.
+
+    Returns:
+        DataFrame: DataFrame transformado para a camada processed.
     """
-    # Altero os nomes das colunas para os nomes finais e marco como False os valores nulos (clientes n tem acesso ao recurso)
     df_transformed_clientes_opt = (
         df.select(
             col(V_ID_CLI).alias(CODIGO_CLIENTE),
@@ -27,15 +32,12 @@ def transform_clientes_opt(df: DataFrame) -> DataFrame:
             col(B_CALL).alias(FLAG_LGPD_CALL),
         )
         .filter(col(V_ID_CLI).isNotNull())
-        .fillna(
-            {
-                 FLAG_LGPD_PUSH: False, 
-                 FLAG_LGPD_SMS: False, 
-                 FLAG_LGPD_EMAIL: False, 
-                 FLAG_LGPD_CALL: False
-            }
-        )
+        .fillna({
+            FLAG_LGPD_PUSH: False,
+            FLAG_LGPD_SMS: False,
+            FLAG_LGPD_EMAIL: False,
+            FLAG_LGPD_CALL: False
+        })
     )
-    
-    return df_transformed_clientes_opt
 
+    return df_transformed_clientes_opt
