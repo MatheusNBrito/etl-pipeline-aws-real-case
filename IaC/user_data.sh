@@ -1,18 +1,40 @@
 #!/bin/bash
 
+set -e
+
 # Atualiza os pacotes do sistema
-yum update -y
+apt-get update -y
 
-# Instala o Docker
-yum install -y docker
+# Instala dependências para o Docker
+apt-get install -y \
+    ca-certificates \
+    curl \
+    gnupg \
+    lsb-release \
+    apt-transport-https
+
+# Adiciona chave GPG oficial do Docker
+mkdir -p /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+# Adiciona repositório Docker
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# Atualiza de novo e instala Docker Engine
+apt-get update -y
+apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+# Starta o serviço do Docker
+systemctl enable docker
 systemctl start docker
-systemctl enable docker  # inicia o Docker automaticamente ao ligar
-usermod -aG docker ec2-user
 
-# Instala o Docker Compose (última versão disponível)
-curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" \
-  -o /usr/local/bin/docker-compose
-chmod +x /usr/local/bin/docker-compose
+# Adiciona o usuário ubuntu no grupo docker (importante para usar sem sudo)
+usermod -aG docker ubuntu
 
-# Agendamento para desligar todos os dias às 20h UTC (17hrs Brasília)
+# Instala docker-compose (caso precise ainda)
+apt-get install -y docker-compose
+
+# Agendamento para desligar todos os dias às 20h UTC (17h Brasília)
 echo "0 20 * * * root /sbin/shutdown -h now" >> /etc/crontab

@@ -54,7 +54,7 @@ resource "aws_instance" "etl_ec2" {
 
   root_block_device {
     encrypted   = true
-    volume_size = 8
+    volume_size = 40
   }
 
   tags = merge(var.tags, {
