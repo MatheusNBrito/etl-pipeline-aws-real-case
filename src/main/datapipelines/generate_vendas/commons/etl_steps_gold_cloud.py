@@ -5,6 +5,7 @@ from datapipelines.generate_vendas.commons.functions import DataLoader, save_par
 from datapipelines.generate_vendas.config_loader import config
 import logging
 from datapipelines.generate_vendas.commons.spark_session import SparkSessionWrapper
+import gc
 
 logger = logging.getLogger(__name__)
 
