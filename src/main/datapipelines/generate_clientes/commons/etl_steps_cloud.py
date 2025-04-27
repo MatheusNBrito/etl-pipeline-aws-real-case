@@ -38,12 +38,12 @@ def save_processed_data(df_tuple):
     save_parquet(df_enderecos, paths["ENDERECOS_CLIENTES_PATH"])
 
     # Aqui faz o upload para o S3 após salvar o arquivo
-    s3 = boto3.client('s3')
-    bucket_name = 'etl-pipeline-aws-dev-bucket'  # Seu bucket S3
+    # s3 = boto3.client('s3')
+    # bucket_name = 'etl-pipeline-aws-dev-bucket'  # Seu bucket S3
 
-    # Upload dos arquivos processados para o S3
-    s3.upload_file(paths["CLIENTES_PATH"], bucket_name, 'processed/clientes.parquet')
-    s3.upload_file(paths["CLIENTES_OPT_PATH"], bucket_name, 'processed/clientes_opt.parquet')
-    s3.upload_file(paths["ENDERECOS_CLIENTES_PATH"], bucket_name, 'processed/enderecos_clientes.parquet')
+    # # Upload dos arquivos processados para o S3
+    # s3.upload_file(paths["CLIENTES_PATH"], bucket_name, 'processed/clientes.parquet')
+    # s3.upload_file(paths["CLIENTES_OPT_PATH"], bucket_name, 'processed/clientes_opt.parquet')
+    # s3.upload_file(paths["ENDERECOS_CLIENTES_PATH"], bucket_name, 'processed/enderecos_clientes.parquet')
 
     print("Arquivos processados enviados para o S3 com sucesso!")

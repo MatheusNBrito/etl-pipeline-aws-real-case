@@ -17,7 +17,11 @@ services:
       retries: 10
 
   airflow:
-    build: .
+    build:
+      context: .
+      args:
+        AIRFLOW_VERSION: 2.7.3
+        CONSTRAINT_URL: https://raw.githubusercontent.com/apache/airflow/constraints-2.7.3/constraints-3.10.txt
     container_name: airflow-standalone
     depends_on:
       postgres:
@@ -36,7 +40,7 @@ services:
       - ./airflow_home:/opt/airflow
       - ./src:/app/src
       - ./data:/app/data
-      - /var/run/docker.sock:/var/run/docker.sock  # 👈 Permite rodar Docker dentro do container
+      - /var/run/docker.sock:/var/run/docker.sock
     command: >
       bash -c "
         echo '🔄 Aguardando PostgreSQL...' &&
@@ -54,6 +58,7 @@ services:
       "
 
 
+
   spark:
     image: bitnami/spark:latest
     container_name: spark-master
@@ -61,7 +66,7 @@ services:
       - SPARK_MODE=master
     ports:
       - "7077:7077"
-      - "8082:8080"  # 👈 Mudando porta 8080 pra 8082 (pra não conflitar com Airflow UI!)
+      - "8082:8080"  
     volumes:
       - ./src:/app/src
       - ./data:/app/data
