@@ -19,6 +19,8 @@ class SparkSessionWrapper:
         hadoop_conf.set("fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem")
         hadoop_conf.set("fs.s3a.endpoint", "s3.us-east-2.amazonaws.com")
         hadoop_conf.set("fs.s3a.aws.credentials.provider", "com.amazonaws.auth.DefaultAWSCredentialsProviderChain")
+        hadoop_conf.set("fs.s3a.path.style.access", "true")
+        hadoop_conf.set("fs.s3a.multiobjectdelete.enable", "false")
 
         logger.info(f"✅ Spark session started with app: {app_name}")
 
@@ -29,8 +31,7 @@ class SparkSessionWrapper:
         logger.info("🛑 Stopping Spark session")
         self.spark.stop()
 
-#Bloco para teste de conexão com o spark
-
+# Bloco para teste de conexão com o spark
 if __name__ == "__main__":
     spark_wrapper = SparkSessionWrapper(app_name="TestSession")
     spark = spark_wrapper.get_session()

@@ -42,11 +42,4 @@ def save_gold_data(df: DataFrame):
     df = replace_nulls(df)
     save_parquet(df, output_path)
 
-    # Cria o cliente boto3 para o S3
-    # s3 = boto3.client('s3')
-    # bucket_name = 'etl-pipeline-aws-dev-bucket'  # Seu bucket S3
-
-    # # Faz o upload para o S3
-    # s3.upload_file(output_path, bucket_name, 'gold/clientes_gold.parquet')
-
     print("Arquivo Gold enviado para o S3 com sucesso!")
