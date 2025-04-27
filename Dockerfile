@@ -42,6 +42,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Instalação do Apache Spark
+# Instalação do Apache Spark
 RUN mkdir -p /opt/spark && \
     cd /opt/spark && \
     ( \
@@ -51,6 +52,12 @@ RUN mkdir -p /opt/spark && \
     ) && \
     tar xzf spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz --strip-components=1 && \
     rm spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz
+
+# Baixar dependências para suporte ao S3 (hadoop-aws e aws-java-sdk-bundle)
+RUN mkdir -p /opt/spark/jars && \
+    curl -L -o /opt/spark/jars/hadoop-aws-3.3.4.jar https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-aws/3.3.4/hadoop-aws-3.3.4.jar && \
+    curl -L -o /opt/spark/jars/aws-java-sdk-bundle-1.11.901.jar https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-bundle/1.11.901/aws-java-sdk-bundle-1.11.901.jar
+
 
 ENV SPARK_HOME=/opt/spark
 ENV PATH=$PATH:$SPARK_HOME/bin
