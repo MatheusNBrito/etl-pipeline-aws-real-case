@@ -143,12 +143,15 @@ Os arquivos `.parquet` e `.json` utilizados por este pipeline são específicos 
 📁 [Clique aqui para acessar os arquivos brutos no Google Drive](https://drive.google.com/drive/folders/1ugcCETCJ2-zcX6oGHHbKXggrYiKRXmR7?usp=drive_link)
 
 
+📘 Para detalhes completos sobre arquitetura, execução e fluxos de dados, acesse a  
+[📄 Documentação Técnica Completa](https://pointed-growth-de1.notion.site/Documenta-o-T-cnica-Pipeline-de-Engenharia-de-Dados-123325ce8372807abd80ff81df657dfb?pvs=73)
 
-
-
-Para detalhes completos sobre arquitetura, execução e fluxos de dados, acesse a [Documentação Técnica Completa](https://pointed-growth-de1.notion.site/Documenta-o-T-cnica-Pipeline-de-Engenharia-de-Dados-123325ce8372807abd80ff81df657dfb?pvs=73).
 
 ---
 
-Projeto desenvolvido por **Matheus Brito**, Engenheiro de dados. 
+---
+
+👨‍💻 Projeto desenvolvido por [**Matheus Brito**](https://www.linkedin.com/in/matheusnbrito/), 
+Engenheiro de Dados  
+
 🔗 [LinkedIn](https://www.linkedin.com/in/matheusnbrito/) | 🔗 [GitHub](https://github.com/MatheusNBrito)
