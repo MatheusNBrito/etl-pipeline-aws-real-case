@@ -25,6 +25,7 @@ O ambiente foi construído utilizando contêineres Docker orquestrados via `dock
 ```bash
 git clone https://github.com/MatheusNBrito/etl-pipeline-aws-real-case.git
 cd etl-pipeline-aws-real-case
+```
 
 ## ⚙️ 3. Ajustes Necessários
 
@@ -51,6 +52,7 @@ docker run -it --rm \
   -v $(pwd):/app \
   -w /app \
   hashicorp/terraform:light init
+```
 
 ### 🔹 Aplicar o Terraform:
 
@@ -61,6 +63,7 @@ docker run -it --rm \
   -e AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id) \
   -e AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key) \
   hashicorp/terraform:light apply -var-file=terraform.tfvars
+```
 
 ## 🔐 5. Conectar na Instância EC2
 
@@ -68,12 +71,13 @@ Antes de conectar, ajuste as permissões da chave:
 
 ```bash
 chmod 400 ~/.ssh/nome-da-chave.pem
+```
 
 Utilize o comando abaixo substituindo pelo nome da sua chave `.pem` e o IP público da instância:
 
 ```bash
 ssh -i "nome-da-chave.pem" ubuntu@<IP-Publico-da-EC2>
-
+```
 ## ⚙️ 6. Preparação dentro da EC2
 
 Após conectar na EC2:
@@ -83,12 +87,12 @@ Após conectar na EC2:
 ```bash
 git clone https://github.com/MatheusNBrito/etl-pipeline-aws-real-case.git
 cd etl-pipeline-aws-real-case
-
+```
 2. Subir os contêineres:
 
 ```bash
 docker compose up -d --build
-
+```
 ## 🌐 7. Acessar o Airflow
 
 No navegador, acesse: http://<IP-Publico-da-EC2>:8081
@@ -119,7 +123,7 @@ Para encerrar o ambiente e parar os contêineres:
 
 ```bash
 docker compose down
-
+```
 ### 💣 Destruir toda a infraestrutura
 
 Caso deseje remover todos os recursos provisionados na AWS:
@@ -132,7 +136,7 @@ docker run -it --rm \
   -e AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id) \
   -e AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key) \
   hashicorp/terraform:light destroy -var-file=terraform.tfvars
-
+```
 
 ## 📥 0. Download dos Dados Brutos
 
@@ -145,7 +149,6 @@ Os arquivos `.parquet` e `.json` utilizados por este pipeline são específicos 
 
 📘 Para detalhes completos sobre arquitetura, execução e fluxos de dados, acesse a  
 [📄 Documentação Técnica Completa](https://pointed-growth-de1.notion.site/Documenta-o-T-cnica-Pipeline-de-Engenharia-de-Dados-123325ce8372807abd80ff81df657dfb?pvs=73)
-
 
 ---
 
