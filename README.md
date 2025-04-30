@@ -168,5 +168,3 @@ Este projeto teve como objetivo simular um cenário real de engenharia de dados 
 
 👨‍💻 Projeto desenvolvido por [**Matheus Brito**](https://www.linkedin.com/in/matheusnbrito/), 
 Engenheiro de Dados  
-
-🔗 [LinkedIn](https://www.linkedin.com/in/matheusnbrito/) | 🔗 [GitHub](https://github.com/MatheusNBrito)
