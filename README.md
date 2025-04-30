@@ -146,6 +146,18 @@ Os arquivos `.parquet` e `.json` utilizados por este pipeline são específicos 
 ### 🔗 Link para download:
 📁 [Clique aqui para acessar os arquivos brutos no Google Drive](https://drive.google.com/drive/folders/1ugcCETCJ2-zcX6oGHHbKXggrYiKRXmR7?usp=drive_link)
 
+## 📈 Impactos e Resultados
+
+Este projeto teve como objetivo simular um cenário real de engenharia de dados em nuvem, com foco em modularização, automação e boas práticas de arquitetura. Abaixo, estão os principais impactos gerados:
+
+- 🔄 **Automação completa de pipelines ETL** usando Airflow, eliminando processos manuais.
+- 🧱 **Camadas organizadas (raw → processed → gold)** no S3, seguindo arquitetura em múltiplas zonas.
+- 🐘 **Processamento distribuído com Spark**, garantindo escalabilidade e eficiência.
+- ☁️ **Infraestrutura como código com Terraform**, facilitando o provisionamento repetível e versionado.
+- 📦 **Ambiente 100% Dockerizado**, com rápida reprodutibilidade local ou em nuvem.
+- 📊 **Separação por domínio de dados (Clientes e Vendas)**, refletindo boas práticas de arquitetura orientada a dados.
+- 📁 Redução da complexidade operacional ao centralizar orquestração, armazenamento e execução em uma stack única e portável.
+
 
 📘 Para detalhes completos sobre arquitetura, execução e fluxos de dados, acesse a  
 [📄 Documentação Técnica Completa](https://pointed-growth-de1.notion.site/Documenta-o-T-cnica-Pipeline-de-Engenharia-de-Dados-123325ce8372807abd80ff81df657dfb?pvs=73)
