@@ -138,8 +138,11 @@ docker run -it --rm \
 
 Os arquivos `.parquet` e `.json` utilizados por este pipeline são específicos e necessários para a execução correta do projeto. Por questões de tamanho, eles não estão neste repositório.
 
+
 ### 🔗 Link para download:
-📁 [Clique aqui para acessar os arquivos brutos (.parquet)](https://drive.google.com/drive/folder/https://drive.google.com/drive/folders/1ugcCETCJ2-zcX6oGHHbKXggrYiKRXmR7?usp=drive_link)
+📁 [Clique aqui para acessar os arquivos brutos no Google Drive](https://drive.google.com/drive/folders/1ugcCETCJ2-zcX6oGHHbKXggrYiKRXmR7?usp=drive_link)
+
+
 
 
 
