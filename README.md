@@ -134,7 +134,16 @@ docker run -it --rm \
   hashicorp/terraform:light destroy -var-file=terraform.tfvars
 
 
- Para detalhes completos sobre arquitetura, execução e fluxos de dados, acesse a [Documentação Técnica Completa](https://pointed-growth-de1.notion.site/Documenta-o-T-cnica-Pipeline-de-Engenharia-de-Dados-123325ce8372807abd80ff81df657dfb?pvs=73).
+## 📥 0. Download dos Dados Brutos
+
+Os arquivos `.parquet` e `.json` utilizados por este pipeline são específicos e necessários para a execução correta do projeto. Por questões de tamanho, eles não estão neste repositório.
+
+### 🔗 Link para download:
+📁 [Clique aqui para acessar os arquivos brutos (.parquet)](https://drive.google.com/drive/folders/1ugcCETCJ2-zcX6oGHHbKXggrYiKRXmR7?usp=drive_link)
+
+
+
+Para detalhes completos sobre arquitetura, execução e fluxos de dados, acesse a [Documentação Técnica Completa](https://pointed-growth-de1.notion.site/Documenta-o-T-cnica-Pipeline-de-Engenharia-de-Dados-123325ce8372807abd80ff81df657dfb?pvs=73).
 
 ---
 
